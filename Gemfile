@@ -28,4 +28,5 @@ group :test do
   # RSpec & SimpleCov
   gem "rspec"
   gem "simplecov"
+  gem "webmock"
 end
