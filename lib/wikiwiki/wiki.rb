@@ -41,6 +41,7 @@ module Wikiwiki
       Page.new(
         name: page_name,
         source: page_data["source"],
+        # NOTE: API returns timestamp as ISO8601 string for pages
         timestamp: Time.iso8601(page_data["timestamp"])
       )
     end
@@ -95,6 +96,7 @@ module Wikiwiki
         page_name: data["page"],
         name: data["file"],
         size: data["size"],
+        # NOTE: API returns time as Unix timestamp (integer) for attachments, not ISO8601 string
         time: Time.at(data["time"]),
         type: data["type"],
         content:
