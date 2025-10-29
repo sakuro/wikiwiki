@@ -1,6 +1,6 @@
 module Wikiwiki
   class Wiki
-    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey) -> void
+    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter) -> void
 
     def page_names: () -> Array[String]
 

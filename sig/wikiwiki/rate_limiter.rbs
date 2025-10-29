@@ -1,0 +1,47 @@
+module Wikiwiki
+  class RateLimiter
+    def self.raise_on_limit: (Array[{ window: Integer, max_requests: Integer }] limits) -> RateLimiter
+
+    def self.wait_on_limit: (Array[{ window: Integer, max_requests: Integer }] limits) -> RateLimiter
+
+    def self.no_limit: () -> RateLimiter
+
+    def self.default: () -> RateLimiter
+
+    def acquire!: () -> void
+
+    def wait_time_until_available: () -> Float
+
+    def can_request?: () -> bool
+
+    def record!: () -> void
+
+    def wait_time: () -> Float?
+
+    attr_reader mutex: Thread::Mutex
+  end
+
+  module Strategy
+    interface _Strategy
+      def acquire!: (RateLimiter limiter) -> void
+    end
+
+    class Raise
+      include _Strategy
+
+      def acquire!: (RateLimiter limiter) -> void
+    end
+
+    class Wait
+      include _Strategy
+
+      def acquire!: (RateLimiter limiter) -> void
+    end
+
+    class Null
+      include _Strategy
+
+      def acquire!: (RateLimiter limiter) -> void
+    end
+  end
+end

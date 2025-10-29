@@ -28,7 +28,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "authenticates and stores JWT token internally" do
-          api = Wikiwiki::API.new(wiki_id:, auth:)
+          api = Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
           expect(api.__send__(:token)).to eq("jwt_token_123")
         end
       end
@@ -43,7 +43,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "raises Wikiwiki::Error" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "authenticates and stores JWT token internally" do
-          api = Wikiwiki::API.new(wiki_id:, auth:)
+          api = Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
           expect(api.__send__(:token)).to eq("jwt_token_789")
         end
       end
@@ -81,7 +81,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "raises Wikiwiki::Error" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe Wikiwiki::API do
   describe "with authenticated API instance" do
     let(:auth) { Wikiwiki::Auth.password("test_password") }
     let(:auth_response) { instance_double(Net::HTTPSuccess) }
-    let(:api) { Wikiwiki::API.new(wiki_id:, auth:) }
+    let(:api) { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }
 
     before do
       allow(auth_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(true)

@@ -6,10 +6,11 @@ RSpec.describe Wikiwiki::Wiki do
   let(:wiki_id) { "test-wiki" }
   let(:auth) { Wikiwiki::Auth.password("test_password") }
   let(:api) { instance_double(Wikiwiki::API) }
-  let(:wiki) { Wikiwiki::Wiki.new(wiki_id:, auth:) }
+  let(:rate_limiter) { Wikiwiki::RateLimiter.no_limit }
+  let(:wiki) { Wikiwiki::Wiki.new(wiki_id:, auth:, rate_limiter:) }
 
   before do
-    allow(Wikiwiki::API).to receive(:new).with(wiki_id:, auth:).and_return(api)
+    allow(Wikiwiki::API).to receive(:new).with(wiki_id:, auth:, rate_limiter:).and_return(api)
   end
 
   describe "#page_names" do

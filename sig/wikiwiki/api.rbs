@@ -1,6 +1,6 @@
 module Wikiwiki
   class API
-    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey) -> void
+    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter) -> void
 
     def get_pages: () -> Hash[String, Array[Hash[String, String]]]
 
