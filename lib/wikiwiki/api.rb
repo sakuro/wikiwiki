@@ -19,9 +19,11 @@ module Wikiwiki
     #
     # @param wiki_id [String] the wiki identifier
     # @param auth [Auth::Password, Auth::ApiKey] authentication credentials
+    # @param rate_limiter [RateLimiter] rate limiter instance (default: RateLimiter.default)
     # @raise [Error] if authentication fails
-    def initialize(wiki_id:, auth:)
+    def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default)
       @wiki_id = wiki_id
+      @rate_limiter = rate_limiter
       @token = authenticate(auth)
     end
 
@@ -148,6 +150,8 @@ module Wikiwiki
     # @param authenticate [Boolean] whether to include authentication header
     # @return [Net::HTTPResponse] HTTP response
     private def request(method, uri, body: nil, authenticate: true)
+      @rate_limiter.acquire!
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 

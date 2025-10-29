@@ -1,0 +1,19 @@
+module Wikiwiki
+  class SlidingWindow
+    def initialize: (window: Integer, max_requests: Integer) -> void
+
+    def can_request?: () -> bool
+
+    def record!: () -> void
+
+    def wait_time: () -> Float
+
+    private
+
+    def cleanup!: () -> void
+
+    attr_reader window: Integer
+    attr_reader max_requests: Integer
+    attr_reader requests: Array[Time]
+  end
+end

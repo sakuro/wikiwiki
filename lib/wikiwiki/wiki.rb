@@ -20,8 +20,9 @@ module Wikiwiki
     #
     # @param wiki_id [String] the wiki ID
     # @param auth [Wikiwiki::Auth::Password, Wikiwiki::Auth::ApiKey] authentication credentials
-    def initialize(wiki_id:, auth:)
-      @api = API.new(wiki_id:, auth:)
+    # @param rate_limiter [RateLimiter] rate limiter instance (default: RateLimiter.default)
+    def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default)
+      @api = API.new(wiki_id:, auth:, rate_limiter:)
     end
 
     # Returns the list of all page names in the wiki

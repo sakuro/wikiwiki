@@ -13,6 +13,9 @@ module Wikiwiki
   # Base error class for Wikiwiki gem
   class Error < StandardError; end
 
+  # Rate limit exceeded error
+  class RateLimitError < Error; end
+
   loader = Zeitwerk::Loader.for_gem
   loader.inflector.inflect("api" => "API")
   loader.setup

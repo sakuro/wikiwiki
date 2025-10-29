@@ -50,8 +50,10 @@ Metrics/AbcSize:
     - 'lib/wikiwiki/wiki.rb'
 
 # attachment method includes validation logic (size and MD5 checks)
+# request method centralizes HTTP request logic with rate limiting
 Metrics/MethodLength:
   Exclude:
+    - 'lib/wikiwiki/api.rb'
     - 'lib/wikiwiki/wiki.rb'
 
 RSpec/ExampleLength:
