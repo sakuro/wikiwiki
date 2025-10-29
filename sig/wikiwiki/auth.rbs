@@ -1,0 +1,7 @@
+module Wikiwiki
+  module Auth
+    def self.password: (String password) -> Auth::Password
+
+    def self.api_key: (String api_key_id, String secret) -> Auth::ApiKey
+  end
+end

@@ -1,38 +1,93 @@
 # Wikiwiki
 
-TODO: Delete this and the text below, and describe your gem
+A Ruby client library for the [Wikiwiki](https://wikiwiki.jp/) REST API.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/wikiwiki`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Overview
+
+This gem provides a simple interface to interact with Wikiwiki wikis programmatically. It supports page operations (read, write, list) and attachment management (upload, download, delete).
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "wikiwiki"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+And then execute:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle install
+```
+
+Or install it yourself as:
+
+```bash
+gem install wikiwiki
+```
+
+## Authentication
+
+Before using the API, enable REST API access in your wiki's admin panel.
+
+### Password Authentication
+
+```ruby
+auth = Wikiwiki::Auth.password("your_admin_password")
+```
+
+### API Key Authentication
+
+```ruby
+auth = Wikiwiki::Auth.api_key("your_api_key_id", "your_secret")
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Basic Example
 
-## Development
+```ruby
+require "wikiwiki"
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+# Initialize with authentication
+auth = Wikiwiki::Auth.password("admin_password")
+wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+# List all page names
+page_names = wiki.page_names
+# => ["FrontPage", "SideBar", ...]
 
-## Contributing
+# Read a page
+page = wiki.page(page_name: "FrontPage")
+puts page.source
+puts page.timestamp
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/wikiwiki.
+# Update a page
+wiki.update_page(page_name: "TestPage", source: <<~SOURCE)
+  TITLE:Test
+  # Hello World
+SOURCE
+
+# List attachment names
+attachment_names = wiki.attachment_names(page_name: "FrontPage")
+
+# Download an attachment
+attachment = wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png")
+File.binwrite("logo.png", attachment.content)
+# Note: If using attachment.name as filename, validate it first to prevent directory traversal attacks
+
+# Upload an attachment
+content = File.binread("image.png")
+wiki.add_attachment(page_name: "FrontPage", name: "image.png", content:)
+
+# Delete an attachment
+wiki.delete_attachment(page_name: "FrontPage", attachment_name: "image.png")
+```
+
+## Reference
+
+- [Page Operations API](https://z.wikiwiki.jp/wikiwiki-rest-api/topic/1) (Japanese)
+- [File Operations API](https://z.wikiwiki.jp/wikiwiki-rest-api/topic/3) (Japanese)
 
 ## License
 

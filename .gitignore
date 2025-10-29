@@ -16,3 +16,5 @@ Gemfile.lock
 /.serena/*
 !/.serena/project.yml
 /.mcp.json
+
+/.env

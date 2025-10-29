@@ -1,0 +1,9 @@
+module Wikiwiki
+  class Page
+    attr_reader name: String
+    attr_reader source: String
+    attr_reader timestamp: Time
+
+    def initialize: (name: String, source: String, timestamp: Time) -> void
+  end
+end

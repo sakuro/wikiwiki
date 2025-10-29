@@ -7,6 +7,7 @@ gemspec
 group :development, :test do
   gem "irb"
   gem "repl_type_completor"
+
   gem "rake"
 end
 

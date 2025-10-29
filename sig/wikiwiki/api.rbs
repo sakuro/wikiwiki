@@ -1,0 +1,30 @@
+module Wikiwiki
+  class API
+    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey) -> void
+
+    def get_pages: () -> Hash[String, Array[Hash[String, String]]]
+
+    def get_page: (encoded_page_name: String) -> Hash[String, String]
+
+    def put_page: (encoded_page_name: String, source: String) -> void
+
+    def get_attachments: (encoded_page_name: String) -> Hash[String, Hash[String, Hash[String, untyped]]]
+
+    def get_attachment: (encoded_page_name: String, encoded_attachment_name: String, ?rev: String?) -> Hash[String, untyped]
+
+    def put_attachment: (encoded_page_name: String, attachment_name: String, encoded_content: String) -> void
+
+    def delete_attachment: (encoded_page_name: String, encoded_attachment_name: String) -> void
+
+    private
+
+    def authenticate: (Auth::Password | Auth::ApiKey auth) -> String
+
+    def parse_json_response: (Net::HTTPResponse response) -> Hash[String, untyped]
+
+    def request: (Symbol method, URI::HTTPS uri, ?body: Hash[String, String]?, ?authenticate: bool) -> Net::HTTPResponse
+
+    attr_reader wiki_id: String
+    attr_reader token: String
+  end
+end

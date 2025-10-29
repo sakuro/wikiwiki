@@ -1,0 +1,12 @@
+module Wikiwiki
+  class Attachment
+    attr_reader page_name: String
+    attr_reader name: String
+    attr_reader size: Integer
+    attr_reader time: Time
+    attr_reader type: String
+    attr_reader content: String
+
+    def initialize: (page_name: String, name: String, size: Integer, time: Time, type: String, content: String) -> void
+  end
+end

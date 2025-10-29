@@ -7,7 +7,7 @@ AllCops:
     - vendor/**/*
   ExtraDetails: true
   NewCops: enable
-  TargetRubyVersion: 3.4
+  TargetRubyVersion: 3.2
   UseCache: true
 
 inherit_mode:
@@ -36,6 +36,26 @@ inherit_gem:
 inherit_from: .rubocop_todo.yml
 
 # Project-specific settings can be added here
-# Example:
-# Style/Documentation:
-#   Enabled: false
+
+# get_pages, get_page, put_page follow REST API naming convention
+Naming/AccessorMethodName:
+  Exclude:
+    - 'lib/wikiwiki/api.rb'
+
+# request method centralizes HTTP request logic
+# attachment method includes validation logic (size and MD5 checks)
+Metrics/AbcSize:
+  Exclude:
+    - 'lib/wikiwiki/api.rb'
+    - 'lib/wikiwiki/wiki.rb'
+
+# attachment method includes validation logic (size and MD5 checks)
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/wikiwiki/wiki.rb'
+
+RSpec/ExampleLength:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
