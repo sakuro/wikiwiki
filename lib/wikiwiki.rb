@@ -6,8 +6,9 @@ require_relative "wikiwiki/version"
 # Wikiwiki REST API client library
 #
 # @example
-#   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki")
-#   page = wiki.page("FrontPage")
+#   auth = Wikiwiki::Auth.password("admin_password")
+#   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth:)
+#   page = wiki.page(page_name: "FrontPage")
 #   page.name # => "FrontPage"
 module Wikiwiki
   # Base error class for Wikiwiki gem

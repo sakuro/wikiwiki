@@ -12,7 +12,7 @@ module Wikiwiki
   #   auth = Wikiwiki::Auth.password("admin_password")
   #   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth:)
   #   wiki.page_names # => ["FrontPage", "SideBar", ...]
-  #   page = wiki.page("FrontPage")
+  #   page = wiki.page(page_name: "FrontPage")
   class Wiki
     private attr_reader :api
 
