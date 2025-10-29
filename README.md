@@ -1,5 +1,7 @@
 # Wikiwiki
 
+{file:README.ja.md 日本語版}
+
 A Ruby client library for the [Wikiwiki](https://wikiwiki.jp/) REST API.
 
 ## Overview

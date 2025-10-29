@@ -1,5 +1,7 @@
 # Wikiwiki
 
+{file:README.md English version}
+
 [Wikiwiki](https://wikiwiki.jp/) REST API用のRubyクライアントライブラリです。
 
 ## 概要
