@@ -10,8 +10,12 @@ module Wikiwiki
     #   auth.request_body # => {password: "admin_password"}
     Password = Data.define(:password)
 
-    # Password-based authentication credentials
     class Password
+      # Reopen the class to add YARD documentation for attributes
+
+      # @!attribute [r] password
+      #   @return [String] the admin password
+
       # Returns the authentication endpoint path
       #
       # @return [String] endpoint path

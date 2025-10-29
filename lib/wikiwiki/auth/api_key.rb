@@ -10,8 +10,15 @@ module Wikiwiki
     #   auth.request_body # => {api_key_id: "key_id", secret: "secret"}
     ApiKey = Data.define(:api_key_id, :secret)
 
-    # API key-based authentication credentials
     class ApiKey
+      # Reopen the class to add YARD documentation for attributes
+
+      # @!attribute [r] api_key_id
+      #   @return [String] the API key ID
+
+      # @!attribute [r] secret
+      #   @return [String] the secret key
+
       # Returns the authentication endpoint path
       #
       # @return [String] endpoint path

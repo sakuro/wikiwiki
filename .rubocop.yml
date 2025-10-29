@@ -62,6 +62,12 @@ Lint/EmptyClass:
     - 'lib/wikiwiki/page.rb'
     - 'lib/wikiwiki/attachment.rb'
 
+# Reopened classes already have documentation on Data.define
+Style/Documentation:
+  Exclude:
+    - 'lib/wikiwiki/auth/password.rb'
+    - 'lib/wikiwiki/auth/api_key.rb'
+
 RSpec/ExampleLength:
   Enabled: false
 
