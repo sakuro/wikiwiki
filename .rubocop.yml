@@ -65,7 +65,7 @@ Lint/EmptyClass:
     - 'lib/wikiwiki/auth/api_key.rb'
 
 RSpec/ExampleLength:
-  Enabled: false
+  Max: 15
 
 Layout/LineLength:
   Enabled: false
