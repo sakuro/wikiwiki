@@ -15,7 +15,7 @@ module Wikiwiki
       # Returns the authentication endpoint path
       #
       # @return [String] endpoint path
-      def endpoint = "::api/auth"
+      def endpoint = "auth"
 
       # Returns the request body for authentication
       #

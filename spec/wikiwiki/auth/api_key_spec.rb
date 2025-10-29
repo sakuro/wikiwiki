@@ -6,8 +6,8 @@ RSpec.describe Wikiwiki::Auth::ApiKey do
   let(:auth) { Wikiwiki::Auth::ApiKey.new(api_key_id:, secret:) }
 
   describe "#endpoint" do
-    it "returns '::api/auth'" do
-      expect(auth.endpoint).to eq("::api/auth")
+    it "returns 'auth'" do
+      expect(auth.endpoint).to eq("auth")
     end
   end
 
