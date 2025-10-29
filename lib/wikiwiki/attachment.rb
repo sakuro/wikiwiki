@@ -4,7 +4,7 @@ module Wikiwiki
   # Represents a file attachment on a wiki page
   #
   # @example
-  #   auth = Wikiwiki::Auth.password("admin_password")
+  #   auth = Wikiwiki::Auth.password(password: "admin_password")
   #   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth:)
   #   page = wiki.page(page_name: "FrontPage")
   #   attachment_names = wiki.attachment_names(page_name: "FrontPage")

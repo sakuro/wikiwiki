@@ -9,7 +9,7 @@ module Wikiwiki
   # Represents a Wikiwiki wiki instance
   #
   # @example
-  #   auth = Wikiwiki::Auth.password("admin_password")
+  #   auth = Wikiwiki::Auth.password(password: "admin_password")
   #   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth:)
   #   wiki.page_names # => ["FrontPage", "SideBar", ...]
   #   page = wiki.page(page_name: "FrontPage")

@@ -8,7 +8,7 @@ module Wikiwiki
   # Handles HTTP communication with the Wikiwiki REST API
   #
   # @example
-  #   auth = Wikiwiki::Auth.password("secret")
+  #   auth = Wikiwiki::Auth.password(password: "secret")
   #   api = Wikiwiki::API.new(wiki_id: "my-wiki", auth:)
   #   pages = api.get_pages
   class API

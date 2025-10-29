@@ -4,7 +4,7 @@ require "digest/md5"
 
 RSpec.describe Wikiwiki::Wiki do
   let(:wiki_id) { "test-wiki" }
-  let(:auth) { Wikiwiki::Auth.password("test_password") }
+  let(:auth) { Wikiwiki::Auth.password(password: "test_password") }
   let(:api) { instance_double(Wikiwiki::API) }
   let(:rate_limiter) { Wikiwiki::RateLimiter.no_limit }
   let(:wiki) { Wikiwiki::Wiki.new(wiki_id:, auth:, rate_limiter:) }

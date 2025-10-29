@@ -33,13 +33,13 @@ Before using the API, enable REST API access in your wiki's admin panel.
 ### Password Authentication
 
 ```ruby
-auth = Wikiwiki::Auth.password("your_admin_password")
+auth = Wikiwiki::Auth.password(password: "your_admin_password")
 ```
 
 ### API Key Authentication
 
 ```ruby
-auth = Wikiwiki::Auth.api_key("your_api_key_id", "your_secret")
+auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secret")
 ```
 
 ## Usage
@@ -50,7 +50,7 @@ auth = Wikiwiki::Auth.api_key("your_api_key_id", "your_secret")
 require "wikiwiki"
 
 # Initialize with authentication
-auth = Wikiwiki::Auth.password("admin_password")
+auth = Wikiwiki::Auth.password(password: "admin_password")
 wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
 
 # List all page names

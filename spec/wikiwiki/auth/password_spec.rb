@@ -18,7 +18,7 @@ RSpec.describe Wikiwiki::Auth::Password do
 
   describe "factory method" do
     it "can be created via Wikiwiki::Auth.password" do
-      auth = Wikiwiki::Auth.password("test_password")
+      auth = Wikiwiki::Auth.password(password: "test_password")
       expect(auth).to be_a(Wikiwiki::Auth::Password)
       expect(auth.password).to eq("test_password")
     end

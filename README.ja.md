@@ -33,13 +33,13 @@ APIを使用する前に、wikiの管理画面でREST APIアクセスを有効�
 ### パスワード認証
 
 ```ruby
-auth = Wikiwiki::Auth.password("your_admin_password")
+auth = Wikiwiki::Auth.password(password: "your_admin_password")
 ```
 
 ### APIキー認証
 
 ```ruby
-auth = Wikiwiki::Auth.api_key("your_api_key_id", "your_secret")
+auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secret")
 ```
 
 ## 使い方
@@ -50,7 +50,7 @@ auth = Wikiwiki::Auth.api_key("your_api_key_id", "your_secret")
 require "wikiwiki"
 
 # 認証情報を使って初期化
-auth = Wikiwiki::Auth.password("admin_password")
+auth = Wikiwiki::Auth.password(password: "admin_password")
 wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
 
 # すべてのページ名の一覧を取得

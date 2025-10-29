@@ -19,7 +19,7 @@ RSpec.describe Wikiwiki::Auth::ApiKey do
 
   describe "factory method" do
     it "can be created via Wikiwiki::Auth.api_key" do
-      auth = Wikiwiki::Auth.api_key("key_id", "key_secret")
+      auth = Wikiwiki::Auth.api_key(api_key_id: "key_id", secret: "key_secret")
       expect(auth).to be_a(Wikiwiki::Auth::ApiKey)
       expect(auth.api_key_id).to eq("key_id")
       expect(auth.secret).to eq("key_secret")

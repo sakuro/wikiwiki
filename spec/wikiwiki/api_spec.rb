@@ -11,7 +11,7 @@ RSpec.describe Wikiwiki::API do
 
   describe "#initialize" do
     context "with password-based authentication" do
-      let(:auth) { Wikiwiki::Auth.password("admin_password") }
+      let(:auth) { Wikiwiki::Auth.password(password: "admin_password") }
 
       context "when authentication succeeds" do
         let(:response) { instance_double(Net::HTTPSuccess) }
@@ -49,7 +49,7 @@ RSpec.describe Wikiwiki::API do
     end
 
     context "with API key-based authentication" do
-      let(:auth) { Wikiwiki::Auth.api_key("api_key_123", "secret_456") }
+      let(:auth) { Wikiwiki::Auth.api_key(api_key_id: "api_key_123", secret: "secret_456") }
 
       context "when authentication succeeds" do
         let(:response) { instance_double(Net::HTTPSuccess) }
@@ -88,7 +88,7 @@ RSpec.describe Wikiwiki::API do
   end
 
   describe "with authenticated API instance" do
-    let(:auth) { Wikiwiki::Auth.password("test_password") }
+    let(:auth) { Wikiwiki::Auth.password(password: "test_password") }
     let(:auth_response) { instance_double(Net::HTTPSuccess) }
     let(:api) { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }
 

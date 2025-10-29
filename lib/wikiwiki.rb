@@ -6,7 +6,7 @@ require_relative "wikiwiki/version"
 # Wikiwiki REST API client library
 #
 # @example
-#   auth = Wikiwiki::Auth.password("admin_password")
+#   auth = Wikiwiki::Auth.password(password: "admin_password")
 #   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth:)
 #   page = wiki.page(page_name: "FrontPage")
 #   page.name # => "FrontPage"
