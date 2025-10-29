@@ -104,14 +104,14 @@ module Wikiwiki
     # Adds an attachment to a page
     #
     # @param page_name [String] the name of the page
-    # @param name [String] the name of the file
+    # @param attachment_name [String] the name of the file
     # @param content [String] the binary file content
     # @return [void]
     # @raise [Wikiwiki::Error] if the upload fails
-    def add_attachment(page_name:, name:, content:)
+    def add_attachment(page_name:, attachment_name:, content:)
       encoded_page_name = ERB::Util.url_encode(page_name)
       encoded_content = Base64.strict_encode64(content)
-      api.put_attachment(encoded_page_name:, attachment_name: name, encoded_content:)
+      api.put_attachment(encoded_page_name:, attachment_name:, encoded_content:)
     end
 
     # Deletes an attachment from a page

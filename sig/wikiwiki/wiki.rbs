@@ -12,7 +12,7 @@ module Wikiwiki
 
     def attachment: (page_name: String, attachment_name: String) -> Attachment
 
-    def add_attachment: (page_name: String, name: String, content: String) -> void
+    def add_attachment: (page_name: String, attachment_name: String, content: String) -> void
 
     def delete_attachment: (page_name: String, attachment_name: String) -> void
 

@@ -296,7 +296,7 @@ RSpec.describe Wikiwiki::Wiki do
         .with(encoded_page_name: "FrontPage", attachment_name: "logo.png", encoded_content:)
         .and_return({"status" => "ok"})
 
-      result = wiki.add_attachment(page_name: "FrontPage", name: "logo.png", content: binary_content)
+      result = wiki.add_attachment(page_name: "FrontPage", attachment_name: "logo.png", content: binary_content)
 
       expect(result).to eq({"status" => "ok"})
       expect(api).to have_received(:put_attachment)
@@ -311,7 +311,7 @@ RSpec.describe Wikiwiki::Wiki do
         .with(encoded_page_name: "Test%20Page", attachment_name: "logo.png", encoded_content:)
         .and_return({"status" => "ok"})
 
-      wiki.add_attachment(page_name: "Test Page", name: "logo.png", content: binary_content)
+      wiki.add_attachment(page_name: "Test Page", attachment_name: "logo.png", content: binary_content)
 
       expect(api).to have_received(:put_attachment)
         .with(encoded_page_name: "Test%20Page", attachment_name: "logo.png", encoded_content:)
@@ -322,7 +322,7 @@ RSpec.describe Wikiwiki::Wiki do
         .with(encoded_page_name: "FrontPage", attachment_name: "logo.png", encoded_content: anything)
         .and_raise(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
 
-      expect { wiki.add_attachment(page_name: "FrontPage", name: "logo.png", content: "data") }.to raise_error(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
+      expect { wiki.add_attachment(page_name: "FrontPage", attachment_name: "logo.png", content: "data") }.to raise_error(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
     end
   end
 

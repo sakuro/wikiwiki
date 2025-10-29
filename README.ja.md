@@ -78,7 +78,7 @@ File.binwrite("logo.png", attachment.content)
 
 # 添付ファイルをアップロード
 content = File.binread("image.png")
-wiki.add_attachment(page_name: "FrontPage", name: "image.png", content:)
+wiki.add_attachment(page_name: "FrontPage", attachment_name: "image.png", content:)
 
 # 添付ファイルを削除
 wiki.delete_attachment(page_name: "FrontPage", attachment_name: "image.png")
