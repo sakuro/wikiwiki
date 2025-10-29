@@ -147,6 +147,18 @@ RSpec.describe Wikiwiki::Wiki do
       expect(attachment_names).to include("logo.png", "doc.pdf")
     end
 
+    it "returns empty array when no attachments exist" do
+      allow(api).to receive(:get_attachments).with(encoded_page_name: "EmptyPage").and_return(
+        {
+          "attachments" => []
+        }
+      )
+
+      attachment_names = wiki.attachment_names(page_name: "EmptyPage")
+
+      expect(attachment_names).to eq([])
+    end
+
     it "URL-encodes page name before passing to API" do
       allow(api).to receive(:get_attachments).with(encoded_page_name: "Test%20Page").and_return(
         {

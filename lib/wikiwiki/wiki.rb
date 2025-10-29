@@ -63,7 +63,9 @@ module Wikiwiki
     def attachment_names(page_name:)
       encoded_page_name = ERB::Util.url_encode(page_name)
       attachments_data = api.get_attachments(encoded_page_name:)
-      attachments_data["attachments"].keys
+      attachments = attachments_data["attachments"]
+      # API returns [] when no attachments, or Hash when attachments exist
+      attachments.is_a?(Hash) ? attachments.keys : []
     end
 
     # Retrieves a specific attachment on a page
