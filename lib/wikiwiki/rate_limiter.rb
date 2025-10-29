@@ -68,12 +68,12 @@ module Wikiwiki
     # Acquire permission to make a request
     #
     # Behavior depends on the strategy:
-    # - Strategy::RAISE: raises RateLimitError if limit exceeded
-    # - Strategy::WAIT: waits until request can be made
-    # - Strategy::NULL: always succeeds immediately
+    # - raise_on_limit: raises RateLimitError if limit exceeded
+    # - wait_on_limit: waits until request can be made
+    # - no_limit: always succeeds immediately
     #
     # @return [void]
-    # @raise [RateLimitError] if rate limit is exceeded (with RAISE strategy)
+    # @raise [RateLimitError] if rate limit is exceeded (with raise strategy)
     def acquire!
       @strategy.acquire!(self)
     end
