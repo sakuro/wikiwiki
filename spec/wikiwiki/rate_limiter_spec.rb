@@ -25,10 +25,12 @@ RSpec.describe Wikiwiki::RateLimiter do
 
     context "with multiple time window limits" do
       let(:limiter) do
-        Wikiwiki::RateLimiter.raise_on_limit([
-                                               {window: 1, max_requests: 3}, # 3 per second
-                                               {window: 2, max_requests: 5} # 5 per 2 seconds
-                                             ])
+        Wikiwiki::RateLimiter.raise_on_limit(
+          [
+            {window: 1, max_requests: 3}, # 3 per second
+            {window: 2, max_requests: 5} # 5 per 2 seconds
+          ]
+        )
       end
 
       it "allows requests when both limits are satisfied" do
@@ -95,10 +97,12 @@ RSpec.describe Wikiwiki::RateLimiter do
 
       context "with multiple windows" do
         let(:limiter) do
-          Wikiwiki::RateLimiter.raise_on_limit([
-                                                 {window: 1, max_requests: 2},
-                                                 {window: 2, max_requests: 3}
-                                               ])
+          Wikiwiki::RateLimiter.raise_on_limit(
+            [
+              {window: 1, max_requests: 2},
+              {window: 2, max_requests: 3}
+            ]
+          )
         end
 
         it "returns maximum wait time across all limiters" do
@@ -135,10 +139,12 @@ RSpec.describe Wikiwiki::RateLimiter do
 
     context "with realistic API limits" do
       let(:limiter) do
-        Wikiwiki::RateLimiter.wait_on_limit([
-                                              {window: 60, max_requests: 120}, # 120 per minute
-                                              {window: 3600, max_requests: 2000} # 2000 per hour
-                                            ])
+        Wikiwiki::RateLimiter.wait_on_limit(
+          [
+            {window: 60, max_requests: 120}, # 120 per minute
+            {window: 3600, max_requests: 2000} # 2000 per hour
+          ]
+        )
       end
 
       it "allows many requests within limits" do
