@@ -123,8 +123,8 @@ module Wikiwiki
     # @return [String] JWT token
     # @raise [Error] if authentication fails
     private def authenticate(auth)
-      uri = BASE_URL + "/#{wiki_id}/#{auth.endpoint}"
-      response = request(:post, uri, body: auth.request_body, authenticate: false)
+      uri = BASE_URL + "/#{wiki_id}/auth"
+      response = request(:post, uri, body: auth.to_h, authenticate: false)
       data = parse_json_response(response)
       data["token"]
     end

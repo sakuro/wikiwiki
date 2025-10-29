@@ -5,10 +5,6 @@ module Wikiwiki
       attr_reader secret: String
 
       def initialize: (api_key_id: String, secret: String) -> void
-
-      def endpoint: () -> String
-
-      def request_body: () -> Hash[Symbol, String]
     end
   end
 end

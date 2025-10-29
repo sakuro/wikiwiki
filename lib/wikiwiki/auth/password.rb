@@ -6,8 +6,7 @@ module Wikiwiki
     #
     # @example
     #   auth = Wikiwiki::Auth::Password.new(password: "admin_password")
-    #   auth.endpoint # => "auth"
-    #   auth.request_body # => {password: "admin_password"}
+    #   auth.to_h # => {password: "admin_password"}
     Password = Data.define(:password)
 
     class Password
@@ -15,16 +14,6 @@ module Wikiwiki
 
       # @!attribute [r] password
       #   @return [String] the admin password
-
-      # Returns the authentication endpoint path
-      #
-      # @return [String] endpoint path
-      def endpoint = "auth"
-
-      # Returns the request body for authentication
-      #
-      # @return [Hash] request body
-      def request_body = {password:}
     end
   end
 end

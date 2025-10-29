@@ -6,8 +6,7 @@ module Wikiwiki
     #
     # @example
     #   auth = Wikiwiki::Auth::ApiKey.new(api_key_id: "key_id", secret: "secret")
-    #   auth.endpoint # => "::api/auth"
-    #   auth.request_body # => {api_key_id: "key_id", secret: "secret"}
+    #   auth.to_h # => {api_key_id: "key_id", secret: "secret"}
     ApiKey = Data.define(:api_key_id, :secret)
 
     class ApiKey
@@ -18,16 +17,6 @@ module Wikiwiki
 
       # @!attribute [r] secret
       #   @return [String] the secret key
-
-      # Returns the authentication endpoint path
-      #
-      # @return [String] endpoint path
-      def endpoint = "auth"
-
-      # Returns the request body for authentication
-      #
-      # @return [Hash] request body
-      def request_body = {api_key_id:, secret:}
     end
   end
 end

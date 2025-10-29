@@ -56,15 +56,11 @@ Metrics/MethodLength:
     - 'lib/wikiwiki/api.rb'
     - 'lib/wikiwiki/wiki.rb'
 
-# Page and Attachment classes are reopened for YARD documentation purposes
+# Page, Attachment, Password, and ApiKey classes are reopened for YARD documentation purposes
 Lint/EmptyClass:
   Exclude:
     - 'lib/wikiwiki/page.rb'
     - 'lib/wikiwiki/attachment.rb'
-
-# Reopened classes already have documentation on Data.define
-Style/Documentation:
-  Exclude:
     - 'lib/wikiwiki/auth/password.rb'
     - 'lib/wikiwiki/auth/api_key.rb'
 
