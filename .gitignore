@@ -21,3 +21,7 @@ Gemfile.lock
 
 # Ignore YARD generated docs/api/
 /docs/api/
+
+# RBS collection
+/.gem_rbs_collection/
+/rbs_collection.lock.yaml

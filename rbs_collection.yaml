@@ -1,0 +1,12 @@
+# Download sources
+sources:
+  - type: stdlib
+
+# A directory to install the downloaded RBSs
+path: .gem_rbs_collection
+
+# A directory to install the downloaded RBSs
+gems:
+  # Use standard library type definitions
+  - name: net-http
+  - name: uri
