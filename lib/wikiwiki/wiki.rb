@@ -84,12 +84,12 @@ module Wikiwiki
       content = Base64.strict_decode64(data["src"])
 
       if content.bytesize != data["size"]
-        raise Error, "Size mismatch: expected #{data["size"]}, got #{content.bytesize}"
+        raise ContentIntegrityError, "Size mismatch: expected #{data["size"]}, got #{content.bytesize}"
       end
 
       calculated_md5 = Digest::MD5.hexdigest(content)
       if calculated_md5 != data["md5hash"]
-        raise Error, "MD5 hash mismatch: expected #{data["md5hash"]}, got #{calculated_md5}"
+        raise ContentIntegrityError, "MD5 hash mismatch: expected #{data["md5hash"]}, got #{calculated_md5}"
       end
 
       Attachment.new(

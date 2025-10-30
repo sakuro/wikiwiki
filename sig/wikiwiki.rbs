@@ -6,4 +6,19 @@ module Wikiwiki
 
   class RateLimitError < Error
   end
+
+  class ContentIntegrityError < Error
+  end
+
+  class APIError < Error
+  end
+
+  class AuthenticationError < APIError
+  end
+
+  class ResourceNotFoundError < APIError
+  end
+
+  class ServerError < APIError
+  end
 end

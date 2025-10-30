@@ -17,6 +17,25 @@ module Wikiwiki
   # Rate limit exceeded error
   class RateLimitError < Error; end
 
+  # Content integrity error
+  # Raised when downloaded file content doesn't match expected size or MD5 hash
+  class ContentIntegrityError < Error; end
+
+  # API request error
+  class APIError < Error; end
+
+  # Authentication error
+  # Raised when HTTP status is 401
+  class AuthenticationError < APIError; end
+
+  # Resource not found error
+  # Raised when HTTP status is 404
+  class ResourceNotFoundError < APIError; end
+
+  # Server error
+  # Raised when HTTP status is 5xx
+  class ServerError < APIError; end
+
   loader = Zeitwerk::Loader.for_gem
   loader.inflector.inflect("api" => "API")
   loader.setup

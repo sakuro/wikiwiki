@@ -80,9 +80,9 @@ RSpec.describe Wikiwiki::Wiki do
 
     it "raises Wikiwiki::Error when page does not exist" do
       allow(api).to receive(:get_page).with(encoded_page_name: "NonExistent")
-        .and_raise(Wikiwiki::Error, "API request failed: 404 Not Found")
+        .and_raise(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
 
-      expect { wiki.page(page_name: "NonExistent") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+      expect { wiki.page(page_name: "NonExistent") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
     end
   end
 
@@ -110,9 +110,9 @@ RSpec.describe Wikiwiki::Wiki do
 
     it "raises Wikiwiki::Error when update fails" do
       allow(api).to receive(:put_page).with(encoded_page_name: "TestPage", source: new_source)
-        .and_raise(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
+        .and_raise(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
 
-      expect { wiki.update_page(page_name: "TestPage", source: new_source) }.to raise_error(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
+      expect { wiki.update_page(page_name: "TestPage", source: new_source) }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
     end
   end
 
@@ -174,9 +174,9 @@ RSpec.describe Wikiwiki::Wiki do
 
     it "raises Wikiwiki::Error when request fails" do
       allow(api).to receive(:get_attachments).with(encoded_page_name: "FrontPage")
-        .and_raise(Wikiwiki::Error, "API request failed: 404 Not Found")
+        .and_raise(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
 
-      expect { wiki.attachment_names(page_name: "FrontPage") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+      expect { wiki.attachment_names(page_name: "FrontPage") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
     end
   end
 
@@ -255,7 +255,7 @@ RSpec.describe Wikiwiki::Wiki do
           }
         )
 
-      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::Error, /Size mismatch/)
+      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::ContentIntegrityError, /Size mismatch/)
     end
 
     it "raises Wikiwiki::Error when MD5 hash does not match" do
@@ -276,14 +276,14 @@ RSpec.describe Wikiwiki::Wiki do
           }
         )
 
-      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::Error, /MD5 hash mismatch/)
+      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::ContentIntegrityError, /MD5 hash mismatch/)
     end
 
     it "raises Wikiwiki::Error when attachment does not exist" do
       allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "missing.png")
-        .and_raise(Wikiwiki::Error, "API request failed: 404 Not Found")
+        .and_raise(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
 
-      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "missing.png") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+      expect { wiki.attachment(page_name: "FrontPage", attachment_name: "missing.png") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
     end
   end
 
@@ -320,9 +320,9 @@ RSpec.describe Wikiwiki::Wiki do
     it "raises Wikiwiki::Error when upload fails" do
       allow(api).to receive(:put_attachment)
         .with(encoded_page_name: "FrontPage", attachment_name: "logo.png", encoded_content: anything)
-        .and_raise(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
+        .and_raise(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
 
-      expect { wiki.add_attachment(page_name: "FrontPage", attachment_name: "logo.png", content: "data") }.to raise_error(Wikiwiki::Error, "API request failed: 500 Internal Server Error")
+      expect { wiki.add_attachment(page_name: "FrontPage", attachment_name: "logo.png", content: "data") }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
     end
   end
 
@@ -353,9 +353,9 @@ RSpec.describe Wikiwiki::Wiki do
     it "raises Wikiwiki::Error when deletion fails" do
       allow(api).to receive(:delete_attachment)
         .with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png")
-        .and_raise(Wikiwiki::Error, "API request failed: 404 Not Found")
+        .and_raise(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
 
-      expect { wiki.delete_attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+      expect { wiki.delete_attachment(page_name: "FrontPage", attachment_name: "logo.png") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
     end
   end
 end
