@@ -133,10 +133,23 @@ module Wikiwiki
     #
     # @param response [Net::HTTPResponse] HTTP response
     # @return [Hash] parsed response body
-    # @raise [Error] if request fails
+    # @raise [AuthenticationError] if authentication fails (401)
+    # @raise [ResourceNotFoundError] if resource not found (404)
+    # @raise [ServerError] if server error (5xx)
+    # @raise [APIError] if other API request fails
     private def parse_json_response(response)
       unless response.is_a?(Net::HTTPSuccess)
-        raise Error, "API request failed: #{response.code} #{response.message}"
+        message = "API request failed: #{response.code} #{response.message}"
+        case Integer(response.code, 10)
+        when 401
+          raise AuthenticationError, message
+        when 404
+          raise ResourceNotFoundError, message
+        when 500..599
+          raise ServerError, message
+        else
+          raise APIError, message
+        end
       end
 
       JSON.parse(response.body)

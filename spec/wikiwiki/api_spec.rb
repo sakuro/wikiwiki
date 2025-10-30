@@ -37,8 +37,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [401, "Unauthorized"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+        it "raises Wikiwiki::AuthenticationError" do
+          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -74,8 +74,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [401, "Unauthorized"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+        it "raises Wikiwiki::AuthenticationError" do
+          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -135,8 +135,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [404, "Not Found"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.get_pages }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+        it "raises Wikiwiki::ResourceNotFoundError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
         end
       end
 
@@ -147,8 +147,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [401, "Unauthorized"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.get_pages }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+        it "raises Wikiwiki::AuthenticationError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -232,8 +232,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [404, "Not Found"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.get_page(encoded_page_name: "NonExistent") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+        it "raises Wikiwiki::ResourceNotFoundError" do
+          expect { api.get_page(encoded_page_name: "NonExistent") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
         end
       end
 
@@ -244,8 +244,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [401, "Unauthorized"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.get_page(encoded_page_name: "FrontPage") }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+        it "raises Wikiwiki::AuthenticationError" do
+          expect { api.get_page(encoded_page_name: "FrontPage") }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -297,8 +297,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [404, "Not Found"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.put_page(encoded_page_name: "NonExistent", source: "content") }.to raise_error(Wikiwiki::Error, "API request failed: 404 Not Found")
+        it "raises Wikiwiki::ResourceNotFoundError" do
+          expect { api.put_page(encoded_page_name: "NonExistent", source: "content") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
         end
       end
 
@@ -315,8 +315,8 @@ RSpec.describe Wikiwiki::API do
             .to_return(status: [401, "Unauthorized"])
         end
 
-        it "raises Wikiwiki::Error" do
-          expect { api.put_page(encoded_page_name: "TestPage", source: "content") }.to raise_error(Wikiwiki::Error, "API request failed: 401 Unauthorized")
+        it "raises Wikiwiki::AuthenticationError" do
+          expect { api.put_page(encoded_page_name: "TestPage", source: "content") }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
