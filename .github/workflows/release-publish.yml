@@ -1,0 +1,70 @@
+name: Release Publish
+
+# This workflow handles the actual gem publishing after PR merge.
+# Most validations are already performed by the Release Validation workflow.
+
+env:
+  GEM_NAME: ${{ github.event.repository.name }}
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  publish-release:
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release-v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # Required for GitHub Release creation
+
+    steps:
+    - name: Extract version from branch name
+      id: version
+      run: |
+        BRANCH_NAME="${{ github.head_ref }}"
+        VERSION=${BRANCH_NAME#release-v}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Checkout release tag
+      uses: actions/checkout@v5
+      with:
+        ref: ${{ steps.version.outputs.tag }}
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+
+    - name: Build gem
+      run: |
+        bundle exec rake build
+
+    - name: Push gem to RubyGems
+      env:
+        GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+      run: |
+        gem push pkg/${{ env.GEM_NAME }}-${{ steps.version.outputs.version }}.gem
+
+    - name: Extract changelog for this version
+      run: |
+        # Extract changelog content for this version
+        sed -e '1,/^## \[${{ steps.version.outputs.version }}\] /d' CHANGELOG.md | sed -e '/^## \[/,$d' > release_notes.md
+
+    - name: Create GitHub Release
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Create release with changelog and gem file
+        gh release create ${{ steps.version.outputs.tag }} \
+          --title "${{ env.GEM_NAME }} ${{ steps.version.outputs.tag }}" \
+          --notes-file release_notes.md \
+          pkg/${{ env.GEM_NAME }}-${{ steps.version.outputs.version }}.gem
+
+    - name: Post-release summary
+      run: |
+        echo "🎉 Release ${{ steps.version.outputs.tag }} published successfully!"
+        echo "- Gem built from tagged commit and published to RubyGems"
+        echo "- GitHub release created with changelog and assets"
