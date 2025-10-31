@@ -33,7 +33,11 @@ module Wikiwiki
     # @option limits [Integer] :window time window in seconds
     # @option limits [Integer] :max_requests maximum requests allowed in the window
     # @return [RateLimiter]
-    def self.raise_on_limit(limits) = new(limits, Strategy::Raise.new)
+    # @raise [ArgumentError] if limits is empty
+    def self.raise_on_limit(limits)
+      raise ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)" if limits.empty?
+      new(limits, Strategy::Raise.new)
+    end
 
     # Create a rate limiter that waits when limit is exceeded
     #
@@ -41,7 +45,11 @@ module Wikiwiki
     # @option limits [Integer] :window time window in seconds
     # @option limits [Integer] :max_requests maximum requests allowed in the window
     # @return [RateLimiter]
-    def self.wait_on_limit(limits) = new(limits, Strategy::Wait.new)
+    # @raise [ArgumentError] if limits is empty
+    def self.wait_on_limit(limits)
+      raise ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)" if limits.empty?
+      new(limits, Strategy::Wait.new)
+    end
 
     # Create a null rate limiter that never limits
     #

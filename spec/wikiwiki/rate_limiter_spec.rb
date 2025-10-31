@@ -2,6 +2,12 @@
 
 RSpec.describe Wikiwiki::RateLimiter do
   describe ".raise_on_limit" do
+    it "raises ArgumentError when limits is empty" do
+      expect {
+        Wikiwiki::RateLimiter.raise_on_limit([])
+      }.to raise_error(ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)")
+    end
+
     let(:limiter) { Wikiwiki::RateLimiter.raise_on_limit([{window: 1, max_requests: 3}]) }
 
     describe "#acquire!" do
@@ -118,6 +124,12 @@ RSpec.describe Wikiwiki::RateLimiter do
   end
 
   describe ".wait_on_limit" do
+    it "raises ArgumentError when limits is empty" do
+      expect {
+        Wikiwiki::RateLimiter.wait_on_limit([])
+      }.to raise_error(ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)")
+    end
+
     let(:limiter) { Wikiwiki::RateLimiter.wait_on_limit([{window: 1, max_requests: 2}]) }
 
     describe "#acquire!" do
