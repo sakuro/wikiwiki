@@ -14,7 +14,7 @@ module Wikiwiki
   #   wiki.page_names # => ["FrontPage", "SideBar", ...]
   #   page = wiki.page(page_name: "FrontPage")
   class Wiki
-    private attr_reader :api
+    private attr_reader :api, :wiki_id
 
     # Initializes a new Wiki instance
     #
@@ -22,7 +22,15 @@ module Wikiwiki
     # @param auth [Wikiwiki::Auth::Password, Wikiwiki::Auth::ApiKey] authentication credentials
     # @param rate_limiter [RateLimiter] rate limiter instance (default: RateLimiter.default)
     def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default)
+      @wiki_id = wiki_id
       @api = API.new(wiki_id:, auth:, rate_limiter:)
+    end
+
+    # Returns the wiki URL
+    #
+    # @return [URI::HTTPS] the frozen wiki URL
+    def url
+      @url ||= URI.parse("https://wikiwiki.jp/#{wiki_id}/").freeze
     end
 
     # Returns the list of all page names in the wiki

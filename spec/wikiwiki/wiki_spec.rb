@@ -13,6 +13,28 @@ RSpec.describe Wikiwiki::Wiki do
     allow(Wikiwiki::API).to receive(:new).with(wiki_id:, auth:, rate_limiter:).and_return(api)
   end
 
+  describe "#url" do
+    it "returns the wiki URL as URI::HTTPS" do
+      url = wiki.url
+
+      expect(url).to be_a(URI::HTTPS)
+      expect(url.to_s).to eq("https://wikiwiki.jp/test-wiki/")
+    end
+
+    it "returns a frozen URL" do
+      url = wiki.url
+
+      expect(url).to be_frozen
+    end
+
+    it "returns the same object on multiple calls (memoized)" do
+      url1 = wiki.url
+      url2 = wiki.url
+
+      expect(url1).to equal(url2)
+    end
+  end
+
   describe "#page_names" do
     it "returns an array of page names" do
       allow(api).to receive(:get_pages).and_return(

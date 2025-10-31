@@ -2,6 +2,8 @@ module Wikiwiki
   class Wiki
     def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter) -> void
 
+    def url: () -> URI::HTTPS
+
     def page_names: () -> Array[String]
 
     def page: (page_name: String) -> Page
@@ -19,5 +21,6 @@ module Wikiwiki
     private
 
     attr_reader api: API
+    attr_reader wiki_id: String
   end
 end
