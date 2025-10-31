@@ -396,6 +396,14 @@ RSpec.describe Wikiwiki::Wiki do
 
       expect { wiki.add_attachment(page_name: "FrontPage", attachment_name: "logo.png", content: "data") }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
     end
+
+    it "raises Wikiwiki::APIError when file already exists (409 Conflict)" do
+      allow(api).to receive(:put_attachment)
+        .with(encoded_page_name: "FrontPage", attachment_name: "existing.png", encoded_content: anything)
+        .and_raise(Wikiwiki::APIError, "API request failed: 409 Conflict")
+
+      expect { wiki.add_attachment(page_name: "FrontPage", attachment_name: "existing.png", content: "data") }.to raise_error(Wikiwiki::APIError, "API request failed: 409 Conflict")
+    end
   end
 
   describe "#delete_attachment" do

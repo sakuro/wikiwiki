@@ -151,6 +151,54 @@ RSpec.describe Wikiwiki::API do
           expect { api.get_pages }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
+
+      context "when server returns 500 error" do
+        before do
+          stub_request(:get, "https://api.wikiwiki.jp/test-wiki/pages")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+            .to_return(status: [500, "Internal Server Error"])
+        end
+
+        it "raises Wikiwiki::ServerError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
+        end
+      end
+
+      context "when server returns 503 error" do
+        before do
+          stub_request(:get, "https://api.wikiwiki.jp/test-wiki/pages")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+            .to_return(status: [503, "Service Unavailable"])
+        end
+
+        it "raises Wikiwiki::ServerError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::ServerError, "API request failed: 503 Service Unavailable")
+        end
+      end
+
+      context "when server returns 400 error" do
+        before do
+          stub_request(:get, "https://api.wikiwiki.jp/test-wiki/pages")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+            .to_return(status: [400, "Bad Request"])
+        end
+
+        it "raises Wikiwiki::APIError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::APIError, "API request failed: 400 Bad Request")
+        end
+      end
+
+      context "when server returns 429 error" do
+        before do
+          stub_request(:get, "https://api.wikiwiki.jp/test-wiki/pages")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+            .to_return(status: [429, "Too Many Requests"])
+        end
+
+        it "raises Wikiwiki::APIError" do
+          expect { api.get_pages }.to raise_error(Wikiwiki::APIError, "API request failed: 429 Too Many Requests")
+        end
+      end
     end
 
     describe "#get_page" do
@@ -452,6 +500,26 @@ RSpec.describe Wikiwiki::API do
         it "returns hash with status ok" do
           result = api.put_attachment(encoded_page_name: "FrontPage", attachment_name: "logo.png", encoded_content: "base64data")
           expect(result).to eq({"status" => "ok"})
+        end
+      end
+
+      context "when file already exists" do
+        before do
+          stub_request(:put, "https://api.wikiwiki.jp/test-wiki/page/FrontPage/attachment")
+            .with(
+              body: {filename: "existing.png", data: "base64data"}.to_json,
+              headers: {
+                "Authorization" => "Bearer jwt_token_123",
+                "Content-Type" => "application/json"
+              }
+            )
+            .to_return(status: [409, "Conflict"])
+        end
+
+        it "raises Wikiwiki::APIError" do
+          expect {
+            api.put_attachment(encoded_page_name: "FrontPage", attachment_name: "existing.png", encoded_content: "base64data")
+          }.to raise_error(Wikiwiki::APIError, "API request failed: 409 Conflict")
         end
       end
     end
