@@ -6,7 +6,7 @@ A Ruby client library for the [Wikiwiki](https://wikiwiki.jp/) REST API.
 
 ## Overview
 
-This gem provides a simple interface to interact with Wikiwiki wikis programmatically. It supports page operations (read, write, list) and attachment management (upload, download, delete).
+This gem provides a simple interface to interact with Wikiwiki wikis programmatically. It supports page operations (list, read, write) and attachment management (list, upload, download, delete).
 
 ## Installation
 
