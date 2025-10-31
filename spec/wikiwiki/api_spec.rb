@@ -409,6 +409,28 @@ RSpec.describe Wikiwiki::API do
             .with(headers: {"Authorization" => "Bearer jwt_token_123"})).to have_been_made.once
         end
       end
+
+      context "when rev parameter is specified" do
+        let(:rev_hash) { "abc123def456" }
+
+        before do
+          stub_request(:get, "https://api.wikiwiki.jp/test-wiki/page/FrontPage/attachment/logo.png?rev=#{rev_hash}")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+            .to_return(status: 200, body: <<~JSON)
+              {
+                "page": "FrontPage",
+                "file": "logo.png",
+                "src": "base64data"
+              }
+            JSON
+        end
+
+        it "includes rev query parameter in request" do
+          api.get_attachment(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: rev_hash)
+          expect(a_request(:get, "https://api.wikiwiki.jp/test-wiki/page/FrontPage/attachment/logo.png?rev=#{rev_hash}")
+            .with(headers: {"Authorization" => "Bearer jwt_token_123"})).to have_been_made.once
+        end
+      end
     end
 
     describe "#put_attachment" do

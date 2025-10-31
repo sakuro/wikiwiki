@@ -74,12 +74,18 @@ module Wikiwiki
     #
     # @param page_name [String] the name of the page
     # @param attachment_name [String] the name of the attachment file
+    # @param rev [String, nil] optional MD5 hash to retrieve a specific revision
     # @return [Wikiwiki::Attachment] the attachment object with decoded file data
     # @raise [Wikiwiki::Error] if the attachment does not exist
-    def attachment(page_name:, attachment_name:)
+    # @raise [ArgumentError] if rev is not a valid MD5 hash format
+    def attachment(page_name:, attachment_name:, rev: nil)
+      if rev && !rev.match?(/\A[0-9a-f]{32}\z/i)
+        raise ArgumentError, "rev must be a valid MD5 hash (32 hexadecimal characters)"
+      end
+
       encoded_page_name = ERB::Util.url_encode(page_name)
       encoded_attachment_name = ERB::Util.url_encode(attachment_name)
-      data = api.get_attachment(encoded_page_name:, encoded_attachment_name:)
+      data = api.get_attachment(encoded_page_name:, encoded_attachment_name:, rev:)
 
       content = Base64.strict_decode64(data["src"])
 

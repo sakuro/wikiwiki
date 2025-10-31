@@ -10,7 +10,7 @@ module Wikiwiki
 
     def attachment_names: (page_name: String) -> Array[String]
 
-    def attachment: (page_name: String, attachment_name: String) -> Attachment
+    def attachment: (page_name: String, attachment_name: String, ?rev: String?) -> Attachment
 
     def add_attachment: (page_name: String, attachment_name: String, content: String) -> void
 

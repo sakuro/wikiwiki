@@ -187,7 +187,7 @@ RSpec.describe Wikiwiki::Wiki do
       correct_md5 = Digest::MD5.hexdigest(binary_data)
       correct_size = binary_data.bytesize
 
-      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png")
+      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: nil)
         .and_return(
           {
             "page" => "FrontPage",
@@ -218,7 +218,7 @@ RSpec.describe Wikiwiki::Wiki do
       correct_size = binary_data.bytesize
 
       allow(api).to receive(:get_attachment)
-        .with(encoded_page_name: "Test%20Page", encoded_attachment_name: "test%20file.png")
+        .with(encoded_page_name: "Test%20Page", encoded_attachment_name: "test%20file.png", rev: nil)
         .and_return(
           {
             "page" => "Test Page",
@@ -234,7 +234,7 @@ RSpec.describe Wikiwiki::Wiki do
       wiki.attachment(page_name: "Test Page", attachment_name: "test file.png")
 
       expect(api).to have_received(:get_attachment)
-        .with(encoded_page_name: "Test%20Page", encoded_attachment_name: "test%20file.png")
+        .with(encoded_page_name: "Test%20Page", encoded_attachment_name: "test%20file.png", rev: nil)
     end
 
     it "raises Wikiwiki::Error when size does not match" do
@@ -242,7 +242,7 @@ RSpec.describe Wikiwiki::Wiki do
       base64_data = Base64.strict_encode64(binary_data)
       wrong_size = 99999
 
-      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png")
+      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: nil)
         .and_return(
           {
             "page" => "FrontPage",
@@ -263,7 +263,7 @@ RSpec.describe Wikiwiki::Wiki do
       base64_data = Base64.strict_encode64(binary_data)
       wrong_md5 = "incorrect_hash"
 
-      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png")
+      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: nil)
         .and_return(
           {
             "page" => "FrontPage",
@@ -280,10 +280,82 @@ RSpec.describe Wikiwiki::Wiki do
     end
 
     it "raises Wikiwiki::Error when attachment does not exist" do
-      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "missing.png")
+      allow(api).to receive(:get_attachment).with(encoded_page_name: "FrontPage", encoded_attachment_name: "missing.png", rev: nil)
         .and_raise(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
 
       expect { wiki.attachment(page_name: "FrontPage", attachment_name: "missing.png") }.to raise_error(Wikiwiki::ResourceNotFoundError, "API request failed: 404 Not Found")
+    end
+
+    it "passes rev parameter to API when specified with valid MD5 hash" do
+      binary_data = "PNG file content data"
+      base64_data = Base64.strict_encode64(binary_data)
+      correct_md5 = Digest::MD5.hexdigest(binary_data)
+      correct_size = binary_data.bytesize
+      rev_hash = "abc123def456789012345678901234ab"
+
+      allow(api).to receive(:get_attachment)
+        .with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: rev_hash)
+        .and_return(
+          {
+            "page" => "FrontPage",
+            "file" => "logo.png",
+            "size" => correct_size,
+            "time" => 1_640_962_800,
+            "type" => "image/png",
+            "md5hash" => correct_md5,
+            "src" => base64_data
+          }
+        )
+
+      attachment = wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png", rev: rev_hash)
+
+      expect(attachment).to be_a(Wikiwiki::Attachment)
+      expect(api).to have_received(:get_attachment)
+        .with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: rev_hash)
+    end
+
+    it "accepts uppercase MD5 hash in rev parameter" do
+      binary_data = "PNG file content data"
+      base64_data = Base64.strict_encode64(binary_data)
+      correct_md5 = Digest::MD5.hexdigest(binary_data)
+      correct_size = binary_data.bytesize
+      rev_hash = "ABC123DEF456789012345678901234AB"
+
+      allow(api).to receive(:get_attachment)
+        .with(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png", rev: rev_hash)
+        .and_return(
+          {
+            "page" => "FrontPage",
+            "file" => "logo.png",
+            "size" => correct_size,
+            "time" => 1_640_962_800,
+            "type" => "image/png",
+            "md5hash" => correct_md5,
+            "src" => base64_data
+          }
+        )
+
+      attachment = wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png", rev: rev_hash)
+
+      expect(attachment).to be_a(Wikiwiki::Attachment)
+    end
+
+    it "raises ArgumentError when rev is not a valid MD5 hash format (too short)" do
+      expect {
+        wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png", rev: "abc123")
+      }.to raise_error(ArgumentError, "rev must be a valid MD5 hash (32 hexadecimal characters)")
+    end
+
+    it "raises ArgumentError when rev is not a valid MD5 hash format (too long)" do
+      expect {
+        wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png", rev: "abc123def456789012345678901234abcd")
+      }.to raise_error(ArgumentError, "rev must be a valid MD5 hash (32 hexadecimal characters)")
+    end
+
+    it "raises ArgumentError when rev contains non-hexadecimal characters" do
+      expect {
+        wiki.attachment(page_name: "FrontPage", attachment_name: "logo.png", rev: "xyz123def456789012345678901234ab")
+      }.to raise_error(ArgumentError, "rev must be a valid MD5 hash (32 hexadecimal characters)")
     end
   end
 
