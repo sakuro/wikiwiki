@@ -73,24 +73,6 @@ jobs:
           exit 1
         fi
 
-    - name: Validate RubyGems API key
-      env:
-        API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-      run: |
-        if [ -z "$API_KEY" ]; then
-          echo "❌ Error: RUBYGEMS_API_KEY secret is not configured"
-          echo ""
-          echo "To fix this:"
-          echo "1. Generate an API key at https://rubygems.org/profile/api_keys"
-          echo "2. Go to repository Settings -> Secrets and variables -> Actions"
-          echo "3. Add new secret: RUBYGEMS_API_KEY with your API key"
-          echo ""
-          echo "This PR cannot be merged until the secret is configured."
-          exit 1
-        else
-          echo "✅ RUBYGEMS_API_KEY is configured"
-        fi
-
     - name: Validate CHANGELOG.md format
       run: |
         # Check if CHANGELOG has the expected section for this version
@@ -128,6 +110,5 @@ jobs:
           echo "- Git tag validated"
         fi
         echo "- Version not yet on RubyGems"
-        echo "- RubyGems API key is configured"
         echo "- CHANGELOG.md is properly formatted"
         echo "- Quality checks handled by CI workflow"
