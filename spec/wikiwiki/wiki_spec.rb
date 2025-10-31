@@ -7,10 +7,27 @@ RSpec.describe Wikiwiki::Wiki do
   let(:auth) { Wikiwiki::Auth.password(password: "test_password") }
   let(:api) { instance_double(Wikiwiki::API) }
   let(:rate_limiter) { Wikiwiki::RateLimiter.no_limit }
-  let(:wiki) { Wikiwiki::Wiki.new(wiki_id:, auth:, rate_limiter:) }
+  let(:logger) { instance_double(Logger) }
+  let(:wiki) { Wikiwiki::Wiki.new(wiki_id:, auth:, rate_limiter:, logger:) }
 
   before do
-    allow(Wikiwiki::API).to receive(:new).with(wiki_id:, auth:, rate_limiter:).and_return(api)
+    allow(Wikiwiki::API).to receive(:new).with(wiki_id:, auth:, logger:, rate_limiter:).and_return(api)
+  end
+
+  describe "#initialize" do
+    it "raises ArgumentError when logger is explicitly set to nil" do
+      expect {
+        Wikiwiki::Wiki.new(wiki_id:, auth:, logger: nil)
+      }.to raise_error(ArgumentError, "logger cannot be nil")
+    end
+
+    it "creates a default logger when logger is not provided" do
+      allow(Wikiwiki::API).to receive(:new).and_return(api)
+
+      expect {
+        Wikiwiki::Wiki.new(wiki_id:, auth:)
+      }.not_to raise_error
+    end
   end
 
   describe "#url" do

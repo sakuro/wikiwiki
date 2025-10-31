@@ -1,6 +1,8 @@
 module Wikiwiki
   class API
-    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter) -> void
+    attr_reader logger: Logger
+
+    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, logger: Logger, ?rate_limiter: RateLimiter) -> void
 
     def get_pages: () -> Hash[String, Array[Hash[String, String]]]
 
@@ -23,6 +25,10 @@ module Wikiwiki
     def parse_json_response: (Net::HTTPResponse response) -> Hash[String, untyped]
 
     def request: (Symbol method, URI::HTTPS uri, ?body: Hash[String, String]?, ?authenticate: bool) -> Net::HTTPResponse
+
+    def log_request: (Symbol method, URI::HTTPS uri, Net::HTTPRequest request) -> void
+
+    def log_response: (Net::HTTPResponse response) -> void
 
     attr_reader wiki_id: String
     attr_reader token: String

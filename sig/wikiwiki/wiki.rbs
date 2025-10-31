@@ -1,6 +1,8 @@
 module Wikiwiki
   class Wiki
-    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter) -> void
+    attr_reader logger: Logger
+
+    def initialize: (wiki_id: String, auth: Auth::Password | Auth::ApiKey, ?rate_limiter: RateLimiter, ?logger: Logger) -> void
 
     def url: () -> URI::HTTPS
 

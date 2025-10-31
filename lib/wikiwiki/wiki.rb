@@ -3,6 +3,7 @@
 require "base64"
 require "digest/md5"
 require "erb"
+require "logger"
 require "time"
 
 module Wikiwiki
@@ -14,6 +15,8 @@ module Wikiwiki
   #   wiki.page_names # => ["FrontPage", "SideBar", ...]
   #   page = wiki.page(page_name: "FrontPage")
   class Wiki
+    attr_reader :logger
+
     private attr_reader :api, :wiki_id
 
     # Initializes a new Wiki instance
@@ -21,9 +24,14 @@ module Wikiwiki
     # @param wiki_id [String] the wiki ID
     # @param auth [Wikiwiki::Auth::Password, Wikiwiki::Auth::ApiKey] authentication credentials
     # @param rate_limiter [RateLimiter] rate limiter instance (default: RateLimiter.default)
-    def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default)
+    # @param logger [Logger] logger instance for API request/response logging (default: Logger.new($stdout))
+    # @raise [ArgumentError] if logger is explicitly set to nil
+    def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default, logger: Logger.new($stdout))
+      raise ArgumentError, "logger cannot be nil" if logger.nil?
+
       @wiki_id = wiki_id
-      @api = API.new(wiki_id:, auth:, rate_limiter:)
+      @logger = logger
+      @api = API.new(wiki_id:, auth:, logger:, rate_limiter:)
     end
 
     # Returns the wiki URL

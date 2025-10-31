@@ -12,6 +12,8 @@ module Wikiwiki
   #   api = Wikiwiki::API.new(wiki_id: "my-wiki", auth:)
   #   pages = api.get_pages
   class API
+    attr_reader :logger
+
     BASE_URL = URI.parse("https://api.wikiwiki.jp").freeze
     private_constant :BASE_URL
 
@@ -19,11 +21,13 @@ module Wikiwiki
     #
     # @param wiki_id [String] the wiki identifier
     # @param auth [Auth::Password, Auth::ApiKey] authentication credentials
+    # @param logger [Logger] logger instance for request/response logging
     # @param rate_limiter [RateLimiter] rate limiter instance (default: RateLimiter.default)
     # @raise [Error] if authentication fails
-    def initialize(wiki_id:, auth:, rate_limiter: RateLimiter.default)
+    def initialize(wiki_id:, auth:, logger:, rate_limiter: RateLimiter.default)
       @wiki_id = wiki_id
       @rate_limiter = rate_limiter
+      @logger = logger
       @token = authenticate(auth)
     end
 
@@ -178,7 +182,39 @@ module Wikiwiki
 
       request["Authorization"] = "Bearer #{token}" if authenticate
 
-      http.request(request)
+      log_request(method, uri, request)
+      response = http.request(request)
+      log_response(response)
+
+      response
+    end
+
+    # Log HTTP request details
+    #
+    # @param method [Symbol] HTTP method
+    # @param uri [URI::HTTPS] request URI
+    # @param request [Net::HTTPRequest] HTTP request object
+    private def log_request(method, uri, request)
+      logger.info("[#{wiki_id}] API Request: #{method.upcase} #{uri}")
+
+      request.each_header do |key, value|
+        if key.casecmp("authorization").zero?
+          logger.debug("[#{wiki_id}]   #{key}: Bearer ***")
+        else
+          logger.debug("[#{wiki_id}]   #{key}: #{value}")
+        end
+      end
+    end
+
+    # Log HTTP response details
+    #
+    # @param response [Net::HTTPResponse] HTTP response object
+    private def log_response(response)
+      logger.info("[#{wiki_id}] API Response: #{response.code} #{response.message}")
+
+      response.each_header do |key, value|
+        logger.debug("[#{wiki_id}]   #{key}: #{value}")
+      end
     end
 
     private attr_reader :wiki_id, :token

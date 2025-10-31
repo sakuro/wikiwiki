@@ -4,6 +4,7 @@ require "webmock/rspec"
 
 RSpec.describe Wikiwiki::API do
   let(:wiki_id) { "test-wiki" }
+  let(:logger) { instance_double(Logger, info: nil, debug: nil) }
 
   describe "#initialize" do
     context "with password-based authentication" do
@@ -22,7 +23,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "authenticates and stores JWT token internally" do
-          api = Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+          api = Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
           expect(api.__send__(:token)).to eq("jwt_token_123")
         end
       end
@@ -38,7 +39,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "raises Wikiwiki::AuthenticationError" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
+          expect { Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -59,7 +60,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "authenticates and stores JWT token internally" do
-          api = Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+          api = Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
           expect(api.__send__(:token)).to eq("jwt_token_789")
         end
       end
@@ -75,7 +76,7 @@ RSpec.describe Wikiwiki::API do
         end
 
         it "raises Wikiwiki::AuthenticationError" do
-          expect { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
+          expect { Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }.to raise_error(Wikiwiki::AuthenticationError, "API request failed: 401 Unauthorized")
         end
       end
     end
@@ -83,7 +84,7 @@ RSpec.describe Wikiwiki::API do
 
   describe "with authenticated API instance" do
     let(:auth) { Wikiwiki::Auth.password(password: "test_password") }
-    let(:api) { Wikiwiki::API.new(wiki_id:, auth:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }
+    let(:api) { Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }
 
     before do
       stub_request(:post, "https://api.wikiwiki.jp/test-wiki/auth")
@@ -538,6 +539,41 @@ RSpec.describe Wikiwiki::API do
           result = api.delete_attachment(encoded_page_name: "FrontPage", encoded_attachment_name: "logo.png")
           expect(result).to eq({"status" => "ok"})
         end
+      end
+    end
+
+    describe "logging" do
+      let(:logger) { instance_spy(Logger) }
+      let(:api) { Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit) }
+
+      before do
+        stub_request(:get, "https://api.wikiwiki.jp/test-wiki/pages")
+          .with(headers: {"Authorization" => "Bearer jwt_token_123"})
+          .to_return(
+            status: 200,
+            body: '{"pages":[]}',
+            headers: {"Content-Type" => "application/json"}
+          )
+      end
+
+      it "logs API request with wiki_id prefix" do
+        api.get_pages
+        expect(logger).to have_received(:info).with("[test-wiki] API Request: GET https://api.wikiwiki.jp/test-wiki/pages")
+      end
+
+      it "logs request headers with wiki_id prefix and masks Authorization" do
+        api.get_pages
+        expect(logger).to have_received(:debug).with("[test-wiki]   authorization: Bearer ***")
+      end
+
+      it "logs API response with wiki_id prefix" do
+        api.get_pages
+        expect(logger).to have_received(:info).with(match(/\[test-wiki\] API Response: 200/)).at_least(:once)
+      end
+
+      it "logs response headers with wiki_id prefix" do
+        api.get_pages
+        expect(logger).to have_received(:debug).with(match(/\[test-wiki\]   content-type:/)).at_least(:once)
       end
     end
   end
