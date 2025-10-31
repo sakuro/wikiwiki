@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.5.0] - 2025-10-31
+
 ### Added
 
 - Initial release of Wikiwiki REST API client library
