@@ -36,6 +36,7 @@ module Wikiwiki
     # @raise [ArgumentError] if limits is empty
     def self.raise_on_limit(limits)
       raise ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)" if limits.empty?
+
       new(limits, Strategy::Raise.new)
     end
 
@@ -48,6 +49,7 @@ module Wikiwiki
     # @raise [ArgumentError] if limits is empty
     def self.wait_on_limit(limits)
       raise ArgumentError, "limits cannot be empty (use .no_limit for no rate limiting)" if limits.empty?
+
       new(limits, Strategy::Wait.new)
     end
 
