@@ -8,3 +8,4 @@
 - Attachment operations: list, download, upload, and delete
 - Automatic rate limiting with configurable strategies (raise, wait, or no limit)
 - Full RBS type signatures for type safety
+- `Wiki#url` method to get the wiki URL as a frozen `URI::HTTPS` instance
