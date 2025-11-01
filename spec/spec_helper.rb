@@ -2,7 +2,11 @@
 
 require "simplecov"
 
+require "webmock/rspec"
 require "wikiwiki"
+
+# Disable all HTTP connections in tests
+WebMock.disable_net_connect!
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
