@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
   gemspec = File.basename(__FILE__)
   excluded_prefixes = %w[bin/ spec/ .github/ .]
-  excluded_files = %w[Gemfile Rakefile]
+  excluded_files = %w[Gemfile Rakefile mise.toml]
   spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) {|ls|
     ls.each_line("\x0", chomp: true).reject do |f|
       (f == gemspec) || f.start_with?(*excluded_prefixes) || excluded_files.include?(f)
