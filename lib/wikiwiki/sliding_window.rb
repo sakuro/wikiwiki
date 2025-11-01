@@ -24,9 +24,7 @@ module Wikiwiki
     # Record a new request timestamp
     #
     # @return [void]
-    def record!
-      @requests << Time.now
-    end
+    def record! = (@requests << Time.now)
 
     # Get time in seconds until next request can be made
     #

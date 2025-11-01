@@ -84,9 +84,7 @@ module Wikiwiki
     #
     # @return [void]
     # @raise [RateLimitError] if rate limit is exceeded (with raise strategy)
-    def acquire!
-      @strategy.acquire!(self)
-    end
+    def acquire! = @strategy.acquire!(self)
 
     # Get time in seconds until next request can be made
     #
@@ -100,23 +98,17 @@ module Wikiwiki
     # Check if a request can be made without exceeding any limits
     #
     # @return [Boolean] true if request is allowed
-    def can_request?
-      @windows.all?(&:can_request?)
-    end
+    def can_request? = @windows.all?(&:can_request?)
 
     # Record a new request across all window limiters
     #
     # @return [void]
-    def record!
-      @windows.each(&:record!)
-    end
+    def record! = @windows.each(&:record!)
 
     # Get maximum wait time across all window limiters
     #
     # @return [Float, nil] seconds to wait
-    def wait_time
-      @windows.map(&:wait_time).max
-    end
+    def wait_time = @windows.map(&:wait_time).max
 
     attr_reader :mutex
   end
