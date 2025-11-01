@@ -1,0 +1,67 @@
+module Wikiwiki
+  class CLI
+    module Commands
+      module Page
+        class List < Base
+          def call: (
+            ?out: IO,
+            ?err: IO,
+            ?wiki_id: String?,
+            ?api_key_id: String?,
+            ?secret: String?,
+            ?password: String?,
+            ?json: bool,
+            ?verbose: bool,
+            ?debug: bool
+          ) -> void
+        end
+
+        class Show < Base
+          def call: (
+            page_name: String,
+            ?out: IO,
+            ?err: IO,
+            ?wiki_id: String?,
+            ?api_key_id: String?,
+            ?secret: String?,
+            ?password: String?,
+            ?json: bool,
+            ?verbose: bool,
+            ?debug: bool
+          ) -> void
+        end
+
+        class Get < Base
+          def call: (
+            page_name: String,
+            ?output_file: String?,
+            ?force: bool,
+            ?out: IO,
+            ?err: IO,
+            ?wiki_id: String?,
+            ?api_key_id: String?,
+            ?secret: String?,
+            ?password: String?,
+            ?verbose: bool,
+            ?debug: bool
+          ) -> void
+        end
+
+        class Put < Base
+          def call: (
+            page_name: String,
+            ?input_file: String?,
+            ?out: IO,
+            ?err: IO,
+            ?wiki_id: String?,
+            ?api_key_id: String?,
+            ?secret: String?,
+            ?password: String?,
+            ?verbose: bool,
+            ?debug: bool
+          ) -> void
+        end
+      end
+    end
+  end
+end

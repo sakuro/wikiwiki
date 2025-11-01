@@ -2,11 +2,11 @@
 
 {file:README.md English version}
 
-[Wikiwiki](https://wikiwiki.jp/) REST API用のRubyクライアントライブラリです。
+[Wikiwiki](https://wikiwiki.jp/) REST API用のRubyクライアントライブラリおよびコマンドラインツールです。
 
 ## 概要
 
-このgemは、Wikiwikiのwikiをプログラムから操作するためのシンプルなインターフェースを提供します。ページ操作（一覧取得、読み取り、書き込み）と添付ファイル管理（一覧取得、アップロード、ダウンロード、削除）をサポートしています。
+このgemは、Wikiwikiのwikiを操作するためのRubyライブラリとCLIツールの両方を提供します。
 
 ## インストール
 
@@ -46,7 +46,69 @@ auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secre
 
 ## 使い方
 
-### 基本的な使用例
+### コマンドラインインターフェース
+
+`wikiwiki`コマンドで、すべてのAPI操作にアクセスできます：
+
+```bash
+# 環境変数で認証情報を設定（オプション）
+export WIKIWIKI_WIKI_ID=your-wiki-id
+export WIKIWIKI_PASSWORD=your-password
+# または
+export WIKIWIKI_API_KEY_ID=your-api-key-id
+export WIKIWIKI_SECRET=your-secret
+
+# ページ一覧
+wikiwiki page list
+
+# ページのメタデータ表示
+wikiwiki page show FrontPage
+
+# ページのコンテンツをダウンロード
+wikiwiki page get FrontPage
+wikiwiki page get FrontPage frontpage.txt
+
+# ページをアップロード/更新（標準入力またはファイルから）
+wikiwiki page put TestPage < content.txt
+wikiwiki page put TestPage content.txt
+
+# 添付ファイル一覧
+wikiwiki attachment list FrontPage
+
+# 添付ファイルのメタデータ表示
+wikiwiki attachment show FrontPage logo.png
+
+# 添付ファイルをダウンロード
+wikiwiki attachment get FrontPage logo.png
+wikiwiki attachment get FrontPage logo.png --directory downloads/
+
+# 添付ファイルをアップロード（最大512 KiB）
+wikiwiki attachment put FrontPage image.png
+wikiwiki attachment put FrontPage local.png --name remote.png
+
+# 添付ファイルを削除
+wikiwiki attachment delete FrontPage logo.png
+
+# 既存のファイル/添付ファイルを上書きするには --force を使用
+wikiwiki page get FrontPage existing.txt --force
+wikiwiki attachment put FrontPage logo.png --force
+
+# コマンドラインで認証情報を指定（環境変数より優先）
+wikiwiki --wiki-id=your-wiki-id --password=your-password page list
+wikiwiki --wiki-id=your-wiki-id --api-key-id=id --secret=secret page list
+
+# 自動化のためのJSON出力
+wikiwiki page list --json
+wikiwiki attachment show FrontPage logo.png --json
+
+# 詳細モードとデバッグモード
+wikiwiki page list --verbose
+wikiwiki page list --debug
+```
+
+### Rubyライブラリ
+
+ライブラリを使用する基本的な例：
 
 ```ruby
 require "wikiwiki"

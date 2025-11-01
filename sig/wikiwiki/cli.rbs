@@ -1,0 +1,11 @@
+module Wikiwiki
+  class CLI
+    def initialize: (?out: IO, ?err: IO) -> void
+
+    def run: (Array[String] argv) -> Integer
+
+    private
+
+    def handle_error: (Exception error) -> void
+  end
+end

@@ -1,0 +1,9 @@
+module Wikiwiki
+  class CLI
+    module Formatter
+      class JSON
+        def format: (untyped data) -> String
+      end
+    end
+  end
+end

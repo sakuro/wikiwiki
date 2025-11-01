@@ -1,0 +1,9 @@
+module Dry
+  module CLI
+    class Command
+    end
+
+    module Registry
+    end
+  end
+end
