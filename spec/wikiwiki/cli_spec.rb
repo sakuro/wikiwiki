@@ -4,6 +4,7 @@ RSpec.describe Wikiwiki::CLI do
   # Clean up environment variables before each test
   before do
     ENV.delete("WIKIWIKI_WIKI_ID")
+    ENV.delete("WIKIWIKI_TOKEN")
     ENV.delete("WIKIWIKI_API_KEY_ID")
     ENV.delete("WIKIWIKI_SECRET")
     ENV.delete("WIKIWIKI_PASSWORD")
@@ -11,6 +12,7 @@ RSpec.describe Wikiwiki::CLI do
 
   after do
     ENV.delete("WIKIWIKI_WIKI_ID")
+    ENV.delete("WIKIWIKI_TOKEN")
     ENV.delete("WIKIWIKI_API_KEY_ID")
     ENV.delete("WIKIWIKI_SECRET")
     ENV.delete("WIKIWIKI_PASSWORD")
