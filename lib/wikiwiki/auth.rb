@@ -17,5 +17,11 @@ module Wikiwiki
     # @param secret [String] secret key
     # @return [ApiKey] API key authentication object
     def self.api_key(api_key_id:, secret:) = ApiKey.new(api_key_id:, secret:)
+
+    # Create token-based authentication credentials
+    #
+    # @param token [String] JWT authentication token
+    # @return [Token] token authentication object
+    def self.token(token:) = Token.new(token:)
   end
 end

@@ -1,0 +1,9 @@
+module Wikiwiki
+  module Auth
+    class Token
+      attr_reader token: String
+
+      def initialize: (token: String) -> void
+    end
+  end
+end

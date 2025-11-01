@@ -1,0 +1,9 @@
+module Wikiwiki
+  class CLI
+    module Commands
+      class Auth < Base
+        def call: (?out: IO, ?err: IO, **untyped options) -> void
+      end
+    end
+  end
+end

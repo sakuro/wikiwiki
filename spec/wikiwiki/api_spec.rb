@@ -80,6 +80,28 @@ RSpec.describe Wikiwiki::API do
         end
       end
     end
+
+    context "with token-based authentication" do
+      let(:token_string) { "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzYzMDQwMDB9.test" }
+      let(:auth) { Wikiwiki::Auth.token(token: token_string) }
+
+      it "uses the provided token without making authentication request" do
+        api = Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+        expect(api.token).to eq(token_string)
+        expect(WebMock).not_to have_requested(:post, "https://api.wikiwiki.jp/test-wiki/auth")
+      end
+
+      it "makes token accessible via public reader" do
+        api = Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+        expect(api.token).to eq(token_string)
+      end
+
+      it "logs token expiry" do
+        allow(logger).to receive(:debug)
+        Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+        expect(logger).to have_received(:debug).with(/Token expires at/)
+      end
+    end
   end
 
   describe "with authenticated API instance" do

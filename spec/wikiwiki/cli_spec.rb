@@ -102,7 +102,7 @@ RSpec.describe Wikiwiki::CLI do
       it "raises ArgumentError for missing authentication" do
         command = Wikiwiki::CLI::Commands::Base.new
         expect { command.__send__(:create_wiki, wiki_id: "test", debug: false) }
-          .to raise_error(ArgumentError, /Either API key.*or --password must be provided/)
+          .to raise_error(ArgumentError, /Either --token.*or --password must be provided/)
       end
     end
   end

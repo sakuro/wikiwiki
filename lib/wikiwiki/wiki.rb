@@ -17,8 +17,6 @@ module Wikiwiki
   class Wiki
     attr_reader :logger
 
-    private attr_reader :api, :wiki_id
-
     # Initializes a new Wiki instance
     #
     # @param wiki_id [String] the wiki ID
@@ -33,6 +31,13 @@ module Wikiwiki
       @logger = logger
       @api = API.new(wiki_id:, auth:, logger:, rate_limiter:)
     end
+
+    # Returns the authentication token
+    #
+    # @return [String] JWT authentication token
+    def token = api.token
+
+    private attr_reader :api, :wiki_id
 
     # Returns the wiki URL
     #
