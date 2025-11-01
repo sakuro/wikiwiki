@@ -46,7 +46,7 @@ auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secre
 
 ### トークン認証
 
-事前に取得したJWTトークンを使用して、再認証なしで認証できます：
+事前に認証して得られたJWTトークンは、有効期限以内なら再利用できます：
 
 ```ruby
 auth = Wikiwiki::Auth.token(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")

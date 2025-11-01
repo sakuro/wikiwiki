@@ -46,7 +46,7 @@ auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secre
 
 ### Token Authentication
 
-Use a pre-obtained JWT token for authentication without re-authenticating:
+A JWT token obtained from a previous authentication can be reused within its validity period:
 
 ```ruby
 auth = Wikiwiki::Auth.token(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
