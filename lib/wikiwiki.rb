@@ -37,7 +37,7 @@ module Wikiwiki
   class ServerError < APIError; end
 
   loader = Zeitwerk::Loader.for_gem
-  loader.inflector.inflect("api" => "API")
+  loader.inflector.inflect("api" => "API", "cli" => "CLI", "json" => "JSON")
   loader.setup
   loader.eager_load
 end

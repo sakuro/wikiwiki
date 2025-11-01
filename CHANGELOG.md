@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+### Added
+
+- Command-line interface (`wikiwiki` command) for all API operations
+  - Page commands: `list`, `show`, `get`, `put`
+  - Attachment commands: `list`, `show`, `get`, `put`, `delete`
+  - Environment variable support for credentials (WIKIWIKI_WIKI_ID, WIKIWIKI_PASSWORD, WIKIWIKI_API_KEY_ID, WIKIWIKI_SECRET)
+  - JSON output option (`--json`) for automation
+  - Verbose (`--verbose`) and debug (`--debug`) modes
+  - File overwrite protection with `--force` flag
+  - Attachment size limit validation (512 KiB) for uploads
+
 ## [0.5.0] - 2025-10-31
 
 ### Added

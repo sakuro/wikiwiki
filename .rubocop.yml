@@ -44,17 +44,33 @@ Naming/AccessorMethodName:
 
 # request method centralizes HTTP request logic
 # attachment method includes validation logic (size and MD5 checks)
+# CLI command methods handle multiple concerns (validation, progress, output)
 Metrics/AbcSize:
   Exclude:
     - 'lib/wikiwiki/api.rb'
     - 'lib/wikiwiki/wiki.rb'
+    - 'lib/wikiwiki/cli/commands/**/*'
 
 # attachment method includes validation logic (size and MD5 checks)
 # request method centralizes HTTP request logic with rate limiting
+# CLI command methods include option parsing, progress bar handling, and output formatting
+# create_wiki method handles environment variable fallback and validation
 Metrics/MethodLength:
   Exclude:
     - 'lib/wikiwiki/api.rb'
     - 'lib/wikiwiki/wiki.rb'
+    - 'lib/wikiwiki/cli/commands/**/*'
+
+# CLI command methods have conditional logic for options and output modes
+# create_wiki method handles environment variable fallback logic
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'lib/wikiwiki/cli/commands/**/*'
+
+# create_wiki method handles environment variable fallback and validation
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'lib/wikiwiki/cli/commands/base.rb'
 
 # Page, Attachment, Password, and ApiKey classes are reopened for YARD documentation purposes
 Lint/EmptyClass:
@@ -63,6 +79,11 @@ Lint/EmptyClass:
     - 'lib/wikiwiki/attachment.rb'
     - 'lib/wikiwiki/auth/password.rb'
     - 'lib/wikiwiki/auth/api_key.rb'
+
+# Commands module is documented in base.rb and reopened in other files
+Style/Documentation:
+  Exclude:
+    - 'lib/wikiwiki/cli/commands/**/*'
 
 RSpec/ExampleLength:
   Max: 15

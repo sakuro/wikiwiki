@@ -2,11 +2,11 @@
 
 {file:README.ja.md 日本語版}
 
-A Ruby client library for the [Wikiwiki](https://wikiwiki.jp/) REST API.
+A Ruby client library and command-line interface for the [Wikiwiki](https://wikiwiki.jp/) REST API.
 
 ## Overview
 
-This gem provides a simple interface to interact with Wikiwiki wikis programmatically. It supports page operations (list, read, write) and attachment management (list, upload, download, delete).
+This gem provides both a Ruby library and CLI tool to interact with Wikiwiki wikis.
 
 ## Installation
 
@@ -46,7 +46,69 @@ auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secre
 
 ## Usage
 
-### Basic Example
+### Command Line Interface
+
+The `wikiwiki` command provides access to all API operations:
+
+```bash
+# Set credentials via environment variables (optional)
+export WIKIWIKI_WIKI_ID=your-wiki-id
+export WIKIWIKI_PASSWORD=your-password
+# or
+export WIKIWIKI_API_KEY_ID=your-api-key-id
+export WIKIWIKI_SECRET=your-secret
+
+# List pages
+wikiwiki page list
+
+# Show page metadata
+wikiwiki page show FrontPage
+
+# Download page content
+wikiwiki page get FrontPage
+wikiwiki page get FrontPage frontpage.txt
+
+# Upload/update page (from stdin or file)
+wikiwiki page put TestPage < content.txt
+wikiwiki page put TestPage content.txt
+
+# List attachments
+wikiwiki attachment list FrontPage
+
+# Show attachment metadata
+wikiwiki attachment show FrontPage logo.png
+
+# Download attachment
+wikiwiki attachment get FrontPage logo.png
+wikiwiki attachment get FrontPage logo.png --directory downloads/
+
+# Upload attachment (max 512 KiB)
+wikiwiki attachment put FrontPage image.png
+wikiwiki attachment put FrontPage local.png --name remote.png
+
+# Delete attachment
+wikiwiki attachment delete FrontPage logo.png
+
+# Use --force to overwrite existing files/attachments
+wikiwiki page get FrontPage existing.txt --force
+wikiwiki attachment put FrontPage logo.png --force
+
+# Authentication via command line (overrides environment variables)
+wikiwiki --wiki-id=your-wiki-id --password=your-password page list
+wikiwiki --wiki-id=your-wiki-id --api-key-id=id --secret=secret page list
+
+# JSON output for automation
+wikiwiki page list --json
+wikiwiki attachment show FrontPage logo.png --json
+
+# Verbose and debug modes
+wikiwiki page list --verbose
+wikiwiki page list --debug
+```
+
+### Ruby Library
+
+Basic example using the library:
 
 ```ruby
 require "wikiwiki"

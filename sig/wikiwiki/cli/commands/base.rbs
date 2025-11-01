@@ -1,0 +1,26 @@
+module Wikiwiki
+  class CLI
+    module Commands
+      class Base < Dry::CLI::Command
+        private
+
+        def create_wiki: (
+          ?wiki_id: String?,
+          ?api_key_id: String?,
+          ?secret: String?,
+          ?password: String?,
+          ?debug: bool,
+          ?out: IO,
+          ?err: IO,
+          **untyped
+        ) -> Wiki
+
+        def create_logger: (debug: bool, ?out: IO, ?err: IO) -> Logger
+
+        def verbose?: (verbose: bool, ?json: bool, **untyped) -> bool
+
+        def say: (String message, verbose: bool, ?out: IO, **untyped) -> void
+      end
+    end
+  end
+end

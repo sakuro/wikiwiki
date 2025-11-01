@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "wikiwiki"
+
+cli = Wikiwiki::CLI.new
+exit_code = cli.run(ARGV)
+exit(exit_code)

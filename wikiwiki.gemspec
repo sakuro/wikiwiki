@@ -8,8 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors = ["OZAWA Sakuro"]
   spec.email = ["10973+sakuro@users.noreply.github.com"]
 
-  spec.summary = "wikiwiki"
-  spec.description = "wikiwiki"
+  spec.summary = "Ruby client library and CLI for Wikiwiki REST API"
+  spec.description = <<~DESC
+    A Ruby gem providing both a client library and command-line interface for interacting with Wikiwiki.jp REST API.
+    Supports page and attachment operations with authentication via password or API key.
+  DESC
   spec.homepage = "https://github.com/sakuro/wikiwiki"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2"
@@ -36,6 +39,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "base64", "~> 0.3"
+  spec.add_dependency "dry-cli", "~> 1.2"
   spec.add_dependency "zeitwerk", "~> 2.7"
 
   # For more information and examples about making a new gem, check out our
