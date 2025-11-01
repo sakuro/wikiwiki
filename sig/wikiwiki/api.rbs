@@ -23,7 +23,7 @@ module Wikiwiki
 
     def authenticate: (Auth::Password | Auth::ApiKey | Auth::Token auth) -> String
 
-    def log_token_expiry: (String token) -> void
+    def validate_token_expiry: (String token) -> void
 
     def parse_json_response: (Net::HTTPResponse response) -> Hash[String, untyped]
 

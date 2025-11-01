@@ -82,7 +82,11 @@ RSpec.describe Wikiwiki::API do
     end
 
     context "with token-based authentication" do
-      let(:token_string) { "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzYzMDQwMDB9.test" }
+      # Generate token with expiration 24 hours in the future
+      let(:token_string) do
+        payload = {exp: Time.now.to_i + 86400}
+        JWT.encode(payload, nil, "none")
+      end
       let(:auth) { Wikiwiki::Auth.token(token: token_string) }
 
       it "uses the provided token without making authentication request" do
@@ -100,6 +104,21 @@ RSpec.describe Wikiwiki::API do
         allow(logger).to receive(:debug)
         Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
         expect(logger).to have_received(:debug).with(/Token expires at/)
+      end
+
+      context "when token has expired" do
+        # Generate token with expiration 24 hours in the past
+        let(:expired_token) do
+          payload = {exp: Time.now.to_i - 86400}
+          JWT.encode(payload, nil, "none")
+        end
+        let(:auth) { Wikiwiki::Auth.token(token: expired_token) }
+
+        it "raises AuthenticationError" do
+          expect {
+            Wikiwiki::API.new(wiki_id:, auth:, logger:, rate_limiter: Wikiwiki::RateLimiter.no_limit)
+          }.to raise_error(Wikiwiki::AuthenticationError, /Token has expired/)
+        end
       end
     end
   end

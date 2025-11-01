@@ -138,19 +138,25 @@ module Wikiwiki
                 data["token"]
               end
 
-      log_token_expiry(token)
+      validate_token_expiry(token) if auth.is_a?(Auth::Token)
       token
     end
 
-    # Log JWT token expiry information
+    # Validate JWT token expiry
     #
     # @param token [String] JWT token
     # @return [void]
-    private def log_token_expiry(token)
+    # @raise [AuthenticationError] if token has expired
+    private def validate_token_expiry(token)
       payload, = JWT.decode(token, nil, false)
       exp = payload["exp"]
+
       if exp
         exp_time = Time.at(exp)
+        if Time.now >= exp_time
+          raise AuthenticationError, "Token has expired at #{exp_time.iso8601}"
+        end
+
         logger.debug("[#{wiki_id}] Token expires at: #{exp_time.iso8601}")
       else
         logger.debug("[#{wiki_id}] Token has no expiration")
