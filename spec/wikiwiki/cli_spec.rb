@@ -20,7 +20,6 @@ RSpec.describe Wikiwiki::CLI do
 
   describe "#run" do
     it "returns 0 on success" do
-      Wikiwiki::CLI.new
       dry_cli_double = instance_double(Dry::CLI, call: nil)
       allow(Dry::CLI).to receive(:new).and_return(dry_cli_double)
       cli = Wikiwiki::CLI.new
@@ -29,7 +28,6 @@ RSpec.describe Wikiwiki::CLI do
 
     it "returns 1 on error" do
       err = StringIO.new
-      Wikiwiki::CLI.new(err:)
       dry_cli_double = instance_double(Dry::CLI)
       allow(Dry::CLI).to receive(:new).and_return(dry_cli_double)
       cli = Wikiwiki::CLI.new(err:)
@@ -40,7 +38,6 @@ RSpec.describe Wikiwiki::CLI do
     it "handles debug mode when --debug is in arguments" do
       out = StringIO.new
       err = StringIO.new
-      Wikiwiki::CLI.new(out:, err:)
       dry_cli_double = instance_double(Dry::CLI, call: nil)
       allow(Dry::CLI).to receive(:new).and_return(dry_cli_double)
       cli = Wikiwiki::CLI.new(out:, err:)
