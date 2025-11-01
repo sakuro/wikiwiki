@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "jwt"
 require "net/http"
 require "uri"
 
@@ -13,6 +14,7 @@ module Wikiwiki
   #   pages = api.get_pages
   class API
     attr_reader :logger
+    attr_reader :token
 
     BASE_URL = URI.parse("https://api.wikiwiki.jp").freeze
     private_constant :BASE_URL
@@ -123,14 +125,44 @@ module Wikiwiki
 
     # Authenticate with the Wikiwiki API
     #
-    # @param auth [Auth::Password, Auth::ApiKey] authentication credentials
+    # @param auth [Auth::Password, Auth::ApiKey, Auth::Token] authentication credentials
     # @return [String] JWT token
     # @raise [Error] if authentication fails
     private def authenticate(auth)
-      uri = BASE_URL + "/#{wiki_id}/auth"
-      response = request(:post, uri, body: auth.to_h, authenticate: false)
-      data = parse_json_response(response)
-      data["token"]
+      token = if auth.is_a?(Auth::Token)
+                auth.token
+              else
+                uri = BASE_URL + "/#{wiki_id}/auth"
+                response = request(:post, uri, body: auth.to_h, authenticate: false)
+                data = parse_json_response(response)
+                data["token"]
+              end
+
+      validate_token_expiry(token) if auth.is_a?(Auth::Token)
+      token
+    end
+
+    # Validate JWT token expiry
+    #
+    # @param token [String] JWT token
+    # @return [void]
+    # @raise [AuthenticationError] if token has expired
+    private def validate_token_expiry(token)
+      payload, = JWT.decode(token, nil, false)
+      exp = payload["exp"]
+
+      if exp
+        exp_time = Time.at(exp)
+        if Time.now >= exp_time
+          raise AuthenticationError, "Token has expired at #{exp_time.iso8601}"
+        end
+
+        logger.debug("[#{wiki_id}] Token expires at: #{exp_time.iso8601}")
+      else
+        logger.debug("[#{wiki_id}] Token has no expiration")
+      end
+    rescue JWT::DecodeError => e
+      logger.debug("[#{wiki_id}] Failed to decode token: #{e.message}")
     end
 
     # Parse JSON response
@@ -217,6 +249,6 @@ module Wikiwiki
       end
     end
 
-    private attr_reader :wiki_id, :token
+    private attr_reader :wiki_id
   end
 end

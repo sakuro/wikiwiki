@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "base64", "~> 0.3"
   spec.add_dependency "dry-cli", "~> 1.2"
+  spec.add_dependency "jwt", "~> 3.0"
   spec.add_dependency "zeitwerk", "~> 2.7"
 
   # For more information and examples about making a new gem, check out our

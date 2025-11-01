@@ -44,6 +44,14 @@ auth = Wikiwiki::Auth.password(password: "your_admin_password")
 auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secret")
 ```
 
+### Token Authentication
+
+A JWT token obtained from a previous authentication can be reused within its validity period:
+
+```ruby
+auth = Wikiwiki::Auth.token(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+```
+
 ## Usage
 
 ### Command Line Interface
@@ -57,6 +65,13 @@ export WIKIWIKI_PASSWORD=your-password
 # or
 export WIKIWIKI_API_KEY_ID=your-api-key-id
 export WIKIWIKI_SECRET=your-secret
+# or use a pre-obtained token
+export WIKIWIKI_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# Obtain a token for later use
+wikiwiki auth --wiki-id=your-wiki-id --password=your-password
+# or combine with export
+export WIKIWIKI_TOKEN=$(wikiwiki auth --wiki-id=your-wiki-id --password=your-password)
 
 # List pages
 wikiwiki page list
@@ -96,6 +111,7 @@ wikiwiki attachment put FrontPage logo.png --force
 # Authentication via command line (overrides environment variables)
 wikiwiki --wiki-id=your-wiki-id --password=your-password page list
 wikiwiki --wiki-id=your-wiki-id --api-key-id=id --secret=secret page list
+wikiwiki --wiki-id=your-wiki-id --token=eyJ... page list
 
 # JSON output for automation
 wikiwiki page list --json
@@ -115,6 +131,14 @@ require "wikiwiki"
 
 # Initialize with authentication
 auth = Wikiwiki::Auth.password(password: "admin_password")
+wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
+
+# Obtain and reuse authentication token
+token = wiki.token
+# Save token for later use...
+
+# Later, use the saved token
+auth = Wikiwiki::Auth.token(token: token)
 wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
 
 # List all page names

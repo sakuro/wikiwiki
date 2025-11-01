@@ -44,6 +44,14 @@ auth = Wikiwiki::Auth.password(password: "your_admin_password")
 auth = Wikiwiki::Auth.api_key(api_key_id: "your_api_key_id", secret: "your_secret")
 ```
 
+### トークン認証
+
+事前に認証して得られたJWTトークンは、有効期限以内なら再利用できます：
+
+```ruby
+auth = Wikiwiki::Auth.token(token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+```
+
 ## 使い方
 
 ### コマンドラインインターフェース
@@ -57,6 +65,13 @@ export WIKIWIKI_PASSWORD=your-password
 # または
 export WIKIWIKI_API_KEY_ID=your-api-key-id
 export WIKIWIKI_SECRET=your-secret
+# または事前に取得したトークンを使用
+export WIKIWIKI_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# 後で使用するためにトークンを取得
+wikiwiki auth --wiki-id=your-wiki-id --password=your-password
+# またはexportと組み合わせて使用
+export WIKIWIKI_TOKEN=$(wikiwiki auth --wiki-id=your-wiki-id --password=your-password)
 
 # ページ一覧
 wikiwiki page list
@@ -96,6 +111,7 @@ wikiwiki attachment put FrontPage logo.png --force
 # コマンドラインで認証情報を指定（環境変数より優先）
 wikiwiki --wiki-id=your-wiki-id --password=your-password page list
 wikiwiki --wiki-id=your-wiki-id --api-key-id=id --secret=secret page list
+wikiwiki --wiki-id=your-wiki-id --token=eyJ... page list
 
 # 自動化のためのJSON出力
 wikiwiki page list --json
@@ -115,6 +131,14 @@ require "wikiwiki"
 
 # 認証情報を使って初期化
 auth = Wikiwiki::Auth.password(password: "admin_password")
+wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
+
+# 認証トークンを取得して再利用
+token = wiki.token
+# トークンを保存して後で使用...
+
+# 後で保存したトークンを使用
+auth = Wikiwiki::Auth.token(token: token)
 wiki = Wikiwiki::Wiki.new(wiki_id: "your-wiki-id", auth:)
 
 # すべてのページ名の一覧を取得

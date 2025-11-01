@@ -6,6 +6,7 @@ module Wikiwiki
 
         def create_wiki: (
           ?wiki_id: String?,
+          ?token: String?,
           ?api_key_id: String?,
           ?secret: String?,
           ?password: String?,

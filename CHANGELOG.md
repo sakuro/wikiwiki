@@ -2,10 +2,17 @@
 
 ### Added
 
+- Pre-obtained token reuse support
+  - `Auth.token(token:)` for authentication with pre-obtained JWT tokens
+  - `wikiwiki auth` command to obtain authentication tokens
+  - `Wiki#token` method to retrieve the current authentication token
+  - `--token` option and `WIKIWIKI_TOKEN` environment variable support for all commands
+  - JWT token expiration validation with AuthenticationError for expired tokens
 - Command-line interface (`wikiwiki` command) for all API operations
   - Page commands: `list`, `show`, `get`, `put`
   - Attachment commands: `list`, `show`, `get`, `put`, `delete`
-  - Environment variable support for credentials (WIKIWIKI_WIKI_ID, WIKIWIKI_PASSWORD, WIKIWIKI_API_KEY_ID, WIKIWIKI_SECRET)
+  - Authentication command: `auth`
+  - Environment variable support for credentials (WIKIWIKI_WIKI_ID, WIKIWIKI_TOKEN, WIKIWIKI_PASSWORD, WIKIWIKI_API_KEY_ID, WIKIWIKI_SECRET)
   - JSON output option (`--json`) for automation
   - Verbose (`--verbose`) and debug (`--debug`) modes
   - File overwrite protection with `--force` flag

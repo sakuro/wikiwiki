@@ -17,4 +17,12 @@ RSpec.describe Wikiwiki::Auth do
       expect(auth.secret).to eq("key_secret")
     end
   end
+
+  describe ".token" do
+    it "creates Token instance with correct token" do
+      auth = Wikiwiki::Auth.token(token: "jwt_token_123")
+      expect(auth).to be_a(Wikiwiki::Auth::Token)
+      expect(auth.token).to eq("jwt_token_123")
+    end
+  end
 end

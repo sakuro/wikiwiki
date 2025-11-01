@@ -4,6 +4,7 @@ RSpec.describe Wikiwiki::CLI do
   # Clean up environment variables before each test
   before do
     ENV.delete("WIKIWIKI_WIKI_ID")
+    ENV.delete("WIKIWIKI_TOKEN")
     ENV.delete("WIKIWIKI_API_KEY_ID")
     ENV.delete("WIKIWIKI_SECRET")
     ENV.delete("WIKIWIKI_PASSWORD")
@@ -11,6 +12,7 @@ RSpec.describe Wikiwiki::CLI do
 
   after do
     ENV.delete("WIKIWIKI_WIKI_ID")
+    ENV.delete("WIKIWIKI_TOKEN")
     ENV.delete("WIKIWIKI_API_KEY_ID")
     ENV.delete("WIKIWIKI_SECRET")
     ENV.delete("WIKIWIKI_PASSWORD")
@@ -102,7 +104,7 @@ RSpec.describe Wikiwiki::CLI do
       it "raises ArgumentError for missing authentication" do
         command = Wikiwiki::CLI::Commands::Base.new
         expect { command.__send__(:create_wiki, wiki_id: "test", debug: false) }
-          .to raise_error(ArgumentError, /Either API key.*or --password must be provided/)
+          .to raise_error(ArgumentError, /Either --token.*or --password must be provided/)
       end
     end
   end
