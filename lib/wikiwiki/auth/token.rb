@@ -12,5 +12,12 @@ module Wikiwiki
     #   auth = Wikiwiki::Auth.token(token: token)
     #   wiki = Wikiwiki::Wiki.new(wiki_id: "my-wiki", auth: auth)
     Token = Data.define(:token)
+
+    class Token
+      # Reopen the class to add YARD documentation for attributes
+
+      # @!attribute [r] token
+      #   @return [String] the JWT token
+    end
   end
 end

@@ -77,13 +77,14 @@ Metrics/ClassLength:
   Exclude:
     - 'lib/wikiwiki/api.rb'
 
-# Page, Attachment, Password, and ApiKey classes are reopened for YARD documentation purposes
+# Page, Attachment, Password, ApiKey, and Token classes are reopened for YARD documentation purposes
 Lint/EmptyClass:
   Exclude:
     - 'lib/wikiwiki/page.rb'
     - 'lib/wikiwiki/attachment.rb'
     - 'lib/wikiwiki/auth/password.rb'
     - 'lib/wikiwiki/auth/api_key.rb'
+    - 'lib/wikiwiki/auth/token.rb'
 
 # Commands module is documented in base.rb and reopened in other files
 Style/Documentation:
