@@ -87,6 +87,9 @@ wikiwiki page get FrontPage frontpage.txt
 wikiwiki page put TestPage < content.txt
 wikiwiki page put TestPage content.txt
 
+# ページを削除
+wikiwiki page delete TestPage
+
 # 添付ファイル一覧
 wikiwiki attachment list FrontPage
 
@@ -159,6 +162,9 @@ wiki.update_page(page_name: "TestPage", source: <<~SOURCE)
   TITLE:Test
   # Hello World
 SOURCE
+
+# ページを削除
+wiki.delete_page(page_name: "TestPage")
 
 # 添付ファイル名の一覧を取得
 attachment_names = wiki.attachment_names(page_name: "FrontPage")

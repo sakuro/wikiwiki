@@ -70,12 +70,26 @@ module Wikiwiki
     # Updates a page with new content
     #
     # @param page_name [String] the name of the page to update
-    # @param source [String] the new page source content
+    # @param source [String] the new page source content (must not be empty)
     # @return [void]
+    # @raise [ArgumentError] if source is empty
     # @raise [Wikiwiki::Error] if the update fails
+    # @note To delete a page, use {#delete_page} instead
     def update_page(page_name:, source:)
+      raise ArgumentError, "Page source must not be empty. Use delete_page to delete a page." if source.empty?
+
       encoded_page_name = ERB::Util.url_encode(page_name)
       api.put_page(encoded_page_name:, source:)
+    end
+
+    # Deletes a page
+    #
+    # @param page_name [String] the name of the page to delete
+    # @return [void]
+    # @raise [Wikiwiki::Error] if the deletion fails
+    def delete_page(page_name:)
+      encoded_page_name = ERB::Util.url_encode(page_name)
+      api.put_page(encoded_page_name:, source: "")
     end
 
     # Retrieves attachment file names on a page

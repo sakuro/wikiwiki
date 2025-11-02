@@ -61,6 +61,21 @@ module Wikiwiki
             ?debug: bool
           ) -> void
         end
+
+        class Delete < Base
+          def call: (
+            page_name: String,
+            ?out: IO,
+            ?err: IO,
+            ?wiki_id: String?,
+            ?api_key_id: String?,
+            ?secret: String?,
+            ?password: String?,
+            ?token: String?,
+            ?verbose: bool,
+            ?debug: bool
+          ) -> void
+        end
       end
     end
   end

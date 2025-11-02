@@ -62,6 +62,7 @@ module Wikiwiki
     # @param source [String] the page source content
     # @return [void]
     # @raise [Error] if request fails
+    # @note Passing an empty string as source will delete the page
     def put_page(encoded_page_name:, source:)
       uri = BASE_URL + "/#{wiki_id}/page/#{encoded_page_name}"
       response = request(:put, uri, body: {"source" => source})
