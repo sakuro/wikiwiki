@@ -9,12 +9,10 @@ module Wikiwiki
   # Provides commands for managing wiki pages and attachments through the terminal.
   # Supports authentication via API key or password, with configurable logging and output modes.
   class CLI
-    # Run the CLI with given arguments
+    # Initialize the CLI with output streams
     #
-    # @param argv [Array<String>] command-line arguments
     # @param out [IO] standard output (defaults to $stdout)
     # @param err [IO] error output (defaults to $stderr)
-    # @return [Integer] exit code (0 for success, 1 for error)
     def initialize(out: $stdout, err: $stderr)
       @out = out
       @err = err
