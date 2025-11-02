@@ -108,6 +108,10 @@ wikiwiki attachment delete FrontPage logo.png
 wikiwiki page get FrontPage existing.txt --force
 wikiwiki attachment put FrontPage logo.png --force
 
+# 注意: --force による添付ファイルの上書きはアトミックではありません。
+# 既存の添付ファイルを削除してから新しいファイルをアップロードします。
+# アップロードに失敗した場合、添付ファイルは失われます。
+
 # コマンドラインで認証情報を指定（環境変数より優先）
 wikiwiki --wiki-id=your-wiki-id --password=your-password page list
 wikiwiki --wiki-id=your-wiki-id --api-key-id=id --secret=secret page list

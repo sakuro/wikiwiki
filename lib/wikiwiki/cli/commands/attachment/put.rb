@@ -14,7 +14,7 @@ module Wikiwiki
           argument :page_name, required: true, desc: "Page name"
           argument :file_path, required: true, desc: "Local file path"
           option :name, aliases: ["-n"], desc: "Attachment name (inferred from file path if omitted)"
-          option :force, aliases: ["-f"], type: :boolean, default: false, desc: "Overwrite existing attachment"
+          option :force, aliases: ["-f"], type: :boolean, default: false, desc: "Overwrite existing attachment (non-atomic: deletes then uploads)"
 
           # Execute the put command
           #
