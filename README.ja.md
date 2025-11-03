@@ -130,6 +130,23 @@ wikiwiki page list --verbose
 wikiwiki page list --debug
 ```
 
+**一括ダウンロード時のセキュリティ注意:**
+
+APIから取得したページ名や添付ファイル名を使用してページや添付ファイルを一括ダウンロードする自動化処理を行う場合、これらの名前にパストラバーサルシーケンス（例：`../../../etc/passwd`）が含まれている可能性があることに注意してください。ファイルパスとして使用する前に、必ず検証またはサニタイズを行ってください：
+
+```bash
+# 悪い例: シェルスクリプトでAPIから取得した名前を直接使用
+for name in $(wikiwiki page list --json | jq -r '.[]'); do
+  wikiwiki page get "$name" "$name.txt"  # 安全でない: nameに../が含まれる可能性
+done
+
+# 良い例: 自動化スクリプト内で名前をサニタイズ
+for name in $(wikiwiki page list --json | jq -r '.[]'); do
+  safe_name=$(basename "$name")  # ディレクトリ成分を削除
+  wikiwiki page get "$name" "$safe_name.txt"
+done
+```
+
 ### Rubyライブラリ
 
 ライブラリを使用する基本的な例：

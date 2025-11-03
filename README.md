@@ -130,6 +130,23 @@ wikiwiki page list --verbose
 wikiwiki page list --debug
 ```
 
+**Security Note for Bulk Downloads:**
+
+When automating bulk downloads of pages or attachments using page/attachment names from the API, be aware that these names may contain path traversal sequences (e.g., `../../../etc/passwd`). Always validate or sanitize names before using them as file paths:
+
+```bash
+# Bad: Direct use of API-provided names in shell scripts
+for name in $(wikiwiki page list --json | jq -r '.[]'); do
+  wikiwiki page get "$name" "$name.txt"  # UNSAFE if name contains ../
+done
+
+# Good: Sanitize names in your automation script
+for name in $(wikiwiki page list --json | jq -r '.[]'); do
+  safe_name=$(basename "$name")  # Remove directory components
+  wikiwiki page get "$name" "$safe_name.txt"
+done
+```
+
 ### Ruby Library
 
 Basic example using the library:
