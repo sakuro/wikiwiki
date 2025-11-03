@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "securerandom"
-require "tempfile"
+require "tmpdir"
 
 RSpec.describe Wikiwiki::CLI::Commands::Page::Get do
   subject(:command) { Wikiwiki::CLI::Commands::Page::Get.new }
@@ -20,11 +19,15 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Get do
   end
 
   describe "#call with output_file" do
-    let(:output_file) { File.join(Dir.tmpdir, "test_output_#{SecureRandom.hex(8)}.txt") }
-
-    after do
-      FileUtils.rm_f(output_file)
+    around do |example|
+      Dir.mktmpdir do |dir|
+        Dir.chdir(dir) do
+          example.run
+        end
+      end
     end
+
+    let(:output_file) { "test_output.txt" }
 
     context "when output file does not exist" do
       it "writes page content to file" do
