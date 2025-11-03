@@ -1,44 +1,51 @@
 # frozen_string_literal: true
 
+require "tempfile"
+
 RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
   subject(:command) { Wikiwiki::CLI::Commands::Attachment::Put.new }
 
   let(:wiki_id) { "test-wiki" }
   let(:password) { "test-password" }
   let(:page_name) { "TestPage" }
-  let(:file_path) { "test_upload.txt" }
   let(:file_content) { "Test file content" }
-  let(:attachment_name) { "test_upload.txt" }
+  let(:file_path) do
+    file = Tempfile.new(["test_upload", ".txt"])
+    file.write(file_content)
+    file.close
+    file
+  end
+  let(:attachment_name) { File.basename(file_path.path) }
   let(:wiki) { instance_double(Wikiwiki::Wiki) }
 
   before do
     allow(Wikiwiki::Auth).to receive(:password).and_return(double)
     allow(Wikiwiki::Wiki).to receive(:new).and_return(wiki)
-    File.write(file_path, file_content)
   end
 
   after do
-    FileUtils.rm_f(file_path)
+    file_path.close!
   end
 
   describe "#call" do
     context "when file size exceeds limit" do
-      let(:large_file_path) { "large_file.bin" }
       let(:large_content) { "x" * ((512 * 1024) + 1) } # 512 KiB + 1 byte
-
-      before do
-        File.write(large_file_path, large_content)
+      let(:large_file_path) do
+        file = Tempfile.new(["large_file", ".bin"])
+        file.write(large_content)
+        file.close
+        file
       end
 
       after do
-        FileUtils.rm_f(large_file_path)
+        large_file_path.close!
       end
 
       it "raises ArgumentError" do
         expect {
           command.call(
             page_name:,
-            file_path: large_file_path,
+            file_path: large_file_path.path,
             wiki_id:,
             password:,
             force: false,
@@ -56,7 +63,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       end
 
       it "uploads the attachment" do
-        command.call(page_name:, file_path:, wiki_id:, password:, force: false, verbose: false, debug: false)
+        command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
 
         expect(wiki).to have_received(:add_attachment).with(
           page_name:,
@@ -68,7 +75,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       it "does not check for deletion" do
         allow(wiki).to receive(:delete_attachment)
 
-        command.call(page_name:, file_path:, wiki_id:, password:, force: false, verbose: false, debug: false)
+        command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
 
         expect(wiki).not_to have_received(:delete_attachment)
       end
@@ -82,7 +89,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       context "without --force option" do
         it "raises ArgumentError" do
           expect {
-            command.call(page_name:, file_path:, wiki_id:, password:, force: false, verbose: false, debug: false)
+            command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
           }.to raise_error(ArgumentError, /already exists/)
         end
 
@@ -90,7 +97,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
           allow(wiki).to receive(:add_attachment)
 
           expect {
-            command.call(page_name:, file_path:, wiki_id:, password:, force: false, verbose: false, debug: false)
+            command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
           }.to raise_error(ArgumentError)
 
           expect(wiki).not_to have_received(:add_attachment)
@@ -104,7 +111,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
         end
 
         it "deletes the existing attachment first" do
-          command.call(page_name:, file_path:, wiki_id:, password:, force: true, verbose: false, debug: false)
+          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
 
           expect(wiki).to have_received(:delete_attachment).with(
             page_name:,
@@ -113,7 +120,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
         end
 
         it "uploads the new attachment" do
-          command.call(page_name:, file_path:, wiki_id:, password:, force: true, verbose: false, debug: false)
+          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
 
           expect(wiki).to have_received(:add_attachment).with(
             page_name:,
@@ -127,7 +134,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
           allow(wiki).to receive(:delete_attachment) { call_order << :delete }
           allow(wiki).to receive(:add_attachment) { call_order << :add }
 
-          command.call(page_name:, file_path:, wiki_id:, password:, force: true, verbose: false, debug: false)
+          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
 
           expect(call_order).to eq(%i[delete add])
         end
@@ -141,7 +148,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
 
       it "raises ResourceNotFoundError" do
         expect {
-          command.call(page_name:, file_path:, wiki_id:, password:, force: false, verbose: false, debug: false)
+          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
         }.to raise_error(Wikiwiki::ResourceNotFoundError)
       end
     end
@@ -157,7 +164,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       it "uses the custom name" do
         command.call(
           page_name:,
-          file_path:,
+          file_path: file_path.path,
           name: custom_name,
           wiki_id:,
           password:,

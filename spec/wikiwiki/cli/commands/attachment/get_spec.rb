@@ -1,7 +1,17 @@
 # frozen_string_literal: true
 
+require "tmpdir"
+
 RSpec.describe Wikiwiki::CLI::Commands::Attachment::Get do
   subject(:command) { Wikiwiki::CLI::Commands::Attachment::Get.new }
+
+  around do |example|
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir) do
+        example.run
+      end
+    end
+  end
 
   let(:wiki_id) { "test-wiki" }
   let(:password) { "test-password" }
@@ -24,12 +34,6 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Get do
     allow(Wikiwiki::Auth).to receive(:password).and_return(double)
     allow(Wikiwiki::Wiki).to receive(:new).and_return(wiki)
     allow(wiki).to receive(:attachment).with(page_name:, attachment_name: file_name).and_return(attachment)
-  end
-
-  after do
-    FileUtils.rm_f(file_name)
-    FileUtils.rm_f("custom_dir/#{file_name}")
-    FileUtils.rm_rf("custom_dir")
   end
 
   describe "#call" do
