@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.7.1] - 2025-11-03
+
+### Documentation
+
+- Added security notes to README about path traversal risks when using API-provided names in bulk download automation scripts
+
 ## [0.7.0] - 2025-11-03
 
 ### Added
