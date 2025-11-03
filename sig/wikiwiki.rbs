@@ -19,6 +19,9 @@ module Wikiwiki
   class ResourceNotFoundError < APIError
   end
 
+  class ConflictError < APIError
+  end
+
   class ServerError < APIError
   end
 end

@@ -172,6 +172,7 @@ module Wikiwiki
     # @return [Hash] parsed response body
     # @raise [AuthenticationError] if authentication fails (401)
     # @raise [ResourceNotFoundError] if resource not found (404)
+    # @raise [ConflictError] if conflict occurs (409)
     # @raise [ServerError] if server error (5xx)
     # @raise [APIError] if other API request fails
     private def parse_json_response(response)
@@ -182,6 +183,8 @@ module Wikiwiki
           raise AuthenticationError, message
         when 404
           raise ResourceNotFoundError, message
+        when 409
+          raise ConflictError, message
         when 500..599
           raise ServerError, message
         else

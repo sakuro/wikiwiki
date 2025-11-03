@@ -112,8 +112,9 @@ wikiwiki page get FrontPage existing.txt --force
 wikiwiki attachment put FrontPage logo.png --force
 
 # Note: Attachment overwrite with --force is not atomic.
-# The existing attachment is deleted before uploading the new one.
-# If the upload fails, the attachment will be lost.
+# First attempts to upload; if it fails due to conflict (file exists),
+# deletes the existing file and retries the upload.
+# If retry fails, the attachment will be lost.
 
 # Authentication via command line (overrides environment variables)
 wikiwiki --wiki-id=your-wiki-id --password=your-password page list

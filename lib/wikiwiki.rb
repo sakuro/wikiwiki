@@ -32,6 +32,10 @@ module Wikiwiki
   # Raised when HTTP status is 404
   class ResourceNotFoundError < APIError; end
 
+  # Conflict error
+  # Raised when HTTP status is 409
+  class ConflictError < APIError; end
+
   # Server error
   # Raised when HTTP status is 5xx
   class ServerError < APIError; end

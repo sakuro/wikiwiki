@@ -21,24 +21,10 @@ module Wikiwiki
           def call(page_name:, file_name:, out: $stdout, err: $stderr, **)
             wiki = create_wiki(out:, err:, **)
 
-            # Check if page exists first
-            unless page_exists?(wiki, page_name:)
-              raise ArgumentError, "Page '#{page_name}' does not exist"
-            end
-
-            # Check if attachment exists
-            unless attachment_exists?(wiki, page_name:, attachment_name: file_name)
-              raise ArgumentError, "Attachment '#{file_name}' does not exist on page '#{page_name}'"
-            end
-
             wiki.delete_attachment(page_name:, attachment_name: file_name)
 
             say("Attachment '#{file_name}' deleted from page '#{page_name}'", out:, **)
           end
-
-          private def page_exists?(wiki, page_name:) = wiki.page_names.include?(page_name)
-
-          private def attachment_exists?(wiki, page_name:, attachment_name:) = wiki.attachment_names(page_name:).include?(attachment_name)
         end
       end
 
