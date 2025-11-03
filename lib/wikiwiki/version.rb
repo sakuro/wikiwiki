@@ -2,6 +2,6 @@
 
 module Wikiwiki
   # The gem version
-  VERSION = "0.7.0"
+  VERSION = "0.7.1"
   public_constant :VERSION
 end
