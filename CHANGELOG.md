@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.7.0] - 2025-11-03
+
 ### Added
 
 - Page deletion support
