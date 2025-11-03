@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+### Added
+
+- Page deletion support
+  - `Wiki#delete_page` method to delete pages
+  - `wikiwiki page delete` command in CLI
+  - Validation in `Wiki#update_page` and `wikiwiki page put` to prevent accidental deletion with empty content
+
 ## [0.6.0] - 2025-11-02
 
 ### Added

@@ -147,11 +147,55 @@ RSpec.describe Wikiwiki::Wiki do
       expect(api).to have_received(:put_page).with(encoded_page_name: "Test%20Page", source: new_source)
     end
 
+    it "raises ArgumentError when source is empty" do
+      expect {
+        wiki.update_page(page_name: "TestPage", source: "")
+      }.to raise_error(ArgumentError, "Page source must not be empty. Use delete_page to delete a page.")
+    end
+
     it "raises Wikiwiki::Error when update fails" do
       allow(api).to receive(:put_page).with(encoded_page_name: "TestPage", source: new_source)
         .and_raise(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
 
       expect { wiki.update_page(page_name: "TestPage", source: new_source) }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
+    end
+  end
+
+  describe "#delete_page" do
+    it "deletes the page by sending empty source" do
+      allow(api).to receive(:put_page).with(encoded_page_name: "TestPage", source: "")
+        .and_return({"status" => "ok"})
+
+      result = wiki.delete_page(page_name: "TestPage")
+
+      expect(result).to eq({"status" => "ok"})
+      expect(api).to have_received(:put_page).with(encoded_page_name: "TestPage", source: "")
+    end
+
+    it "URL-encodes page name before passing to API" do
+      allow(api).to receive(:put_page).with(encoded_page_name: "Test%20Page", source: "")
+        .and_return({"status" => "ok"})
+
+      wiki.delete_page(page_name: "Test Page")
+
+      expect(api).to have_received(:put_page).with(encoded_page_name: "Test%20Page", source: "")
+    end
+
+    it "URL-encodes Japanese page name before passing to API" do
+      encoded_name = "%E3%83%86%E3%82%B9%E3%83%88%E3%83%9A%E3%83%BC%E3%82%B8"
+      allow(api).to receive(:put_page).with(encoded_page_name: encoded_name, source: "")
+        .and_return({"status" => "ok"})
+
+      wiki.delete_page(page_name: "テストページ")
+
+      expect(api).to have_received(:put_page).with(encoded_page_name: encoded_name, source: "")
+    end
+
+    it "raises Wikiwiki::Error when deletion fails" do
+      allow(api).to receive(:put_page).with(encoded_page_name: "TestPage", source: "")
+        .and_raise(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
+
+      expect { wiki.delete_page(page_name: "TestPage") }.to raise_error(Wikiwiki::ServerError, "API request failed: 500 Internal Server Error")
     end
   end
 

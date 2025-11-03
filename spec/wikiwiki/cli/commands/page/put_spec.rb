@@ -52,4 +52,29 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Put do
       expect(wiki).to have_received(:update_page).with(page_name:, source: page_source)
     end
   end
+
+  describe "#call with empty source" do
+    it "raises ArgumentError when source is empty" do
+      out = StringIO.new
+      allow($stdin).to receive(:read).and_return("")
+
+      expect {
+        command.call(out:, page_name:, wiki_id:, password:, verbose: false, debug: false)
+      }.to raise_error(ArgumentError, "Page source must not be empty. Use 'wikiwiki page delete' to delete a page.")
+    end
+
+    it "raises ArgumentError when input file is empty" do
+      input_file = "empty_test.txt"
+      File.write(input_file, "")
+
+      begin
+        out = StringIO.new
+        expect {
+          command.call(out:, page_name:, input_file:, wiki_id:, password:, verbose: false, debug: false)
+        }.to raise_error(ArgumentError, "Page source must not be empty. Use 'wikiwiki page delete' to delete a page.")
+      ensure
+        FileUtils.rm_f(input_file)
+      end
+    end
+  end
 end

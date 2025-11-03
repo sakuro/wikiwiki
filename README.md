@@ -87,6 +87,9 @@ wikiwiki page get FrontPage frontpage.txt
 wikiwiki page put TestPage < content.txt
 wikiwiki page put TestPage content.txt
 
+# Delete page
+wikiwiki page delete TestPage
+
 # List attachments
 wikiwiki attachment list FrontPage
 
@@ -159,6 +162,9 @@ wiki.update_page(page_name: "TestPage", source: <<~SOURCE)
   TITLE:Test
   # Hello World
 SOURCE
+
+# Delete a page
+wiki.delete_page(page_name: "TestPage")
 
 # List attachment names
 attachment_names = wiki.attachment_names(page_name: "FrontPage")

@@ -14,6 +14,8 @@ module Wikiwiki
 
     def update_page: (page_name: String, source: String) -> void
 
+    def delete_page: (page_name: String) -> void
+
     def attachment_names: (page_name: String) -> Array[String]
 
     def attachment: (page_name: String, attachment_name: String, ?rev: String?) -> Attachment

@@ -18,6 +18,8 @@ module Wikiwiki
           # @param out [IO] output stream
           # @param err [IO] error stream
           # @return [void]
+          # @raise [ArgumentError] if source content is empty
+          # @note To delete a page, use `wikiwiki page delete` instead
           def call(page_name:, input_file: nil, out: $stdout, err: $stderr, **)
             wiki = create_wiki(out:, err:, **)
 
@@ -26,6 +28,8 @@ module Wikiwiki
                      else
                        $stdin.read
                      end
+
+            raise ArgumentError, "Page source must not be empty. Use 'wikiwiki page delete' to delete a page." if source.empty?
 
             wiki.update_page(page_name:, source:)
 
