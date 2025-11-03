@@ -1,11 +1,20 @@
 ## [Unreleased]
 
+## [0.7.0] - 2025-11-03
+
 ### Added
 
 - Page deletion support
   - `Wiki#delete_page` method to delete pages
   - `wikiwiki page delete` command in CLI
   - Validation in `Wiki#update_page` and `wikiwiki page put` to prevent accidental deletion with empty content
+- `ConflictError` exception class for HTTP 409 Conflict responses
+
+### Changed
+
+- `attachment put --force` behavior: attempts upload first, then deletes and retries on conflict (409 error)
+  - Previously: checked existence first, then deleted and uploaded
+  - Now: optimistic upload pattern eliminates Time-of-Check-Time-of-Use (TOCTOU) race conditions
 
 ## [0.6.0] - 2025-11-02
 
