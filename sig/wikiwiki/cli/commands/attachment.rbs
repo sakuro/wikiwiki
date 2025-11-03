@@ -65,10 +65,6 @@ module Wikiwiki
             ?verbose: bool,
             ?debug: bool
           ) -> void
-
-          private
-
-          def attachment_exists?: (Wiki wiki, page_name: String, attachment_name: String) -> bool
         end
 
         class Delete < Base
@@ -84,11 +80,6 @@ module Wikiwiki
             ?verbose: bool,
             ?debug: bool
           ) -> void
-
-          private
-
-          def page_exists?: (Wiki wiki, page_name: String) -> bool
-          def attachment_exists?: (Wiki wiki, page_name: String, attachment_name: String) -> bool
         end
       end
     end

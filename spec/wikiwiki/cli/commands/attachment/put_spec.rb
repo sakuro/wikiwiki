@@ -56,9 +56,8 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       end
     end
 
-    context "when attachment does not exist" do
+    context "when uploading new attachment" do
       before do
-        allow(wiki).to receive(:attachment_names).with(page_name:).and_return([])
         allow(wiki).to receive(:add_attachment)
       end
 
@@ -71,19 +70,11 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
           content: file_content
         )
       end
-
-      it "does not check for deletion" do
-        allow(wiki).to receive(:delete_attachment)
-
-        command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
-
-        expect(wiki).not_to have_received(:delete_attachment)
-      end
     end
 
     context "when attachment already exists" do
       before do
-        allow(wiki).to receive(:attachment_names).with(page_name:).and_return([attachment_name])
+        allow(wiki).to receive(:add_attachment).and_raise(Wikiwiki::ConflictError, "API request failed: 409 Conflict")
       end
 
       context "without --force option" do
@@ -92,64 +83,27 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
             command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
           }.to raise_error(ArgumentError, /already exists/)
         end
-
-        it "does not upload the attachment" do
-          allow(wiki).to receive(:add_attachment)
-
-          expect {
-            command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
-          }.to raise_error(ArgumentError)
-
-          expect(wiki).not_to have_received(:add_attachment)
-        end
       end
 
       context "with --force option" do
-        before do
-          allow(wiki).to receive(:delete_attachment)
-          allow(wiki).to receive(:add_attachment)
-        end
+        it "deletes and re-uploads the attachment" do
+          call_count = 0
+          allow(wiki).to receive(:add_attachment) do
+            call_count += 1
+            raise Wikiwiki::ConflictError, "API request failed: 409 Conflict" if call_count == 1
 
-        it "deletes the existing attachment first" do
+            nil
+          end
+          allow(wiki).to receive(:delete_attachment)
+
           command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
 
           expect(wiki).to have_received(:delete_attachment).with(
             page_name:,
             attachment_name:
           )
+          expect(wiki).to have_received(:add_attachment).twice
         end
-
-        it "uploads the new attachment" do
-          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
-
-          expect(wiki).to have_received(:add_attachment).with(
-            page_name:,
-            attachment_name:,
-            content: file_content
-          )
-        end
-
-        it "deletes before adding (non-atomic operation)" do
-          call_order = []
-          allow(wiki).to receive(:delete_attachment) { call_order << :delete }
-          allow(wiki).to receive(:add_attachment) { call_order << :add }
-
-          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: true, verbose: false, debug: false)
-
-          expect(call_order).to eq(%i[delete add])
-        end
-      end
-    end
-
-    context "when page does not exist" do
-      before do
-        allow(wiki).to receive(:attachment_names).and_raise(Wikiwiki::ResourceNotFoundError)
-      end
-
-      it "raises ResourceNotFoundError" do
-        expect {
-          command.call(page_name:, file_path: file_path.path, wiki_id:, password:, force: false, verbose: false, debug: false)
-        }.to raise_error(Wikiwiki::ResourceNotFoundError)
       end
     end
 
@@ -157,7 +111,6 @@ RSpec.describe Wikiwiki::CLI::Commands::Attachment::Put do
       let(:custom_name) { "custom.txt" }
 
       before do
-        allow(wiki).to receive(:attachment_names).with(page_name:).and_return([])
         allow(wiki).to receive(:add_attachment)
       end
 

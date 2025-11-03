@@ -35,22 +35,17 @@ module Wikiwiki
               raise ArgumentError, "File size (#{content.bytesize} bytes) exceeds maximum allowed size (#{MAX_ATTACHMENT_SIZE} bytes / 512 KiB)"
             end
 
-            if attachment_exists?(wiki, page_name:, attachment_name:)
+            begin
+              wiki.add_attachment(page_name:, attachment_name:, content:)
+            rescue ConflictError
               raise ArgumentError, "Attachment '#{attachment_name}' already exists. Use --force to overwrite." unless force
 
-              begin
-                wiki.delete_attachment(page_name:, attachment_name:)
-              rescue ResourceNotFoundError
-                # Already deleted by another process, continue
-              end
+              wiki.delete_attachment(page_name:, attachment_name:)
+              retry
             end
-
-            wiki.add_attachment(page_name:, attachment_name:, content:)
 
             say("Attachment '#{attachment_name}' uploaded to page '#{page_name}'", out:, **)
           end
-
-          private def attachment_exists?(wiki, page_name:, attachment_name:) = wiki.attachment_names(page_name:).include?(attachment_name)
         end
       end
 
