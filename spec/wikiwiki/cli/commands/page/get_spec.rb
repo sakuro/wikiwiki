@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "securerandom"
+require "tempfile"
+
 RSpec.describe Wikiwiki::CLI::Commands::Page::Get do
   subject(:command) { Wikiwiki::CLI::Commands::Page::Get.new }
 
@@ -17,7 +20,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Get do
   end
 
   describe "#call with output_file" do
-    let(:output_file) { "test_output.txt" }
+    let(:output_file) { File.join(Dir.tmpdir, "test_output_#{SecureRandom.hex(8)}.txt") }
 
     after do
       FileUtils.rm_f(output_file)

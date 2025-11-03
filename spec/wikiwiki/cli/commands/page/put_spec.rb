@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "tempfile"
+
 RSpec.describe Wikiwiki::CLI::Commands::Page::Put do
   subject(:command) { Wikiwiki::CLI::Commands::Page::Put.new }
 
@@ -16,19 +18,20 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Put do
   end
 
   describe "#call with input_file" do
-    let(:input_file) { "test_input.txt" }
-
-    before do
-      File.write(input_file, page_source)
+    let(:input_file) do
+      file = Tempfile.new(["test_input", ".txt"])
+      file.write(page_source)
+      file.close
+      file
     end
 
     after do
-      FileUtils.rm_f(input_file)
+      input_file.close!
     end
 
     it "reads content from file and updates page" do
       out = StringIO.new
-      command.call(out:, page_name:, input_file:, wiki_id:, password:, verbose: false, debug: false)
+      command.call(out:, page_name:, input_file: input_file.path, wiki_id:, password:, verbose: false, debug: false)
 
       expect(wiki).to have_received(:update_page).with(page_name:, source: page_source)
     end
@@ -36,7 +39,7 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Put do
     context "with --verbose option" do
       it "outputs success message" do
         out = StringIO.new
-        command.call(out:, page_name:, input_file:, wiki_id:, password:, verbose: true, debug: false)
+        command.call(out:, page_name:, input_file: input_file.path, wiki_id:, password:, verbose: true, debug: false)
         expect(out.string).to match(/Page '#{page_name}' updated successfully/)
       end
     end
@@ -64,16 +67,16 @@ RSpec.describe Wikiwiki::CLI::Commands::Page::Put do
     end
 
     it "raises ArgumentError when input file is empty" do
-      input_file = "empty_test.txt"
-      File.write(input_file, "")
+      empty_file = Tempfile.new(["empty_test", ".txt"])
+      empty_file.close
 
       begin
         out = StringIO.new
         expect {
-          command.call(out:, page_name:, input_file:, wiki_id:, password:, verbose: false, debug: false)
+          command.call(out:, page_name:, input_file: empty_file.path, wiki_id:, password:, verbose: false, debug: false)
         }.to raise_error(ArgumentError, "Page source must not be empty. Use 'wikiwiki page delete' to delete a page.")
       ensure
-        FileUtils.rm_f(input_file)
+        empty_file.close!
       end
     end
   end
