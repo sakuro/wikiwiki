@@ -24,4 +24,3 @@ Gemfile.lock
 
 # RBS collection
 /.gem_rbs_collection/
-/rbs_collection.lock.yaml
